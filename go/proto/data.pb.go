@@ -395,67 +395,6 @@ func (x *UsersResponse) GetUsers() []*User {
 	return nil
 }
 
-// Stats-only response (no user data)
-type StatsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TotalUsers    int32                  `protobuf:"varint,1,opt,name=totalUsers,proto3" json:"totalUsers,omitempty"`
-	ActiveUsers   int32                  `protobuf:"varint,2,opt,name=activeUsers,proto3" json:"activeUsers,omitempty"`
-	DataSizeMB    float64                `protobuf:"fixed64,3,opt,name=dataSizeMB,proto3" json:"dataSizeMB,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *StatsResponse) Reset() {
-	*x = StatsResponse{}
-	mi := &file_data_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *StatsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StatsResponse) ProtoMessage() {}
-
-func (x *StatsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StatsResponse.ProtoReflect.Descriptor instead.
-func (*StatsResponse) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *StatsResponse) GetTotalUsers() int32 {
-	if x != nil {
-		return x.TotalUsers
-	}
-	return 0
-}
-
-func (x *StatsResponse) GetActiveUsers() int32 {
-	if x != nil {
-		return x.ActiveUsers
-	}
-	return 0
-}
-
-func (x *StatsResponse) GetDataSizeMB() float64 {
-	if x != nil {
-		return x.DataSizeMB
-	}
-	return 0
-}
-
 var File_data_proto protoreflect.FileDescriptor
 
 const file_data_proto_rawDesc = "" +
@@ -490,19 +429,10 @@ const file_data_proto_rawDesc = "" +
 	"\rUsersResponse\x12*\n" +
 	"\bmetadata\x18\x01 \x01(\v2\x0e.data.MetadataR\bmetadata\x12 \n" +
 	"\x05users\x18\x02 \x03(\v2\n" +
-	".data.UserR\x05users\"q\n" +
-	"\rStatsResponse\x12\x1e\n" +
-	"\n" +
-	"totalUsers\x18\x01 \x01(\x05R\n" +
-	"totalUsers\x12 \n" +
-	"\vactiveUsers\x18\x02 \x01(\x05R\vactiveUsers\x12\x1e\n" +
-	"\n" +
-	"dataSizeMB\x18\x03 \x01(\x01R\n" +
-	"dataSizeMB2\xaa\x01\n" +
+	".data.UserR\x05users2x\n" +
 	"\vDataService\x12,\n" +
 	"\bGetUsers\x12\v.data.Empty\x1a\x13.data.UsersResponse\x12;\n" +
-	"\x11GetUsersStreaming\x12\x13.data.StreamRequest\x1a\x0f.data.UserChunk0\x01\x120\n" +
-	"\fGetStatsOnly\x12\v.data.Empty\x1a\x13.data.StatsResponseB\tZ\a./protob\x06proto3"
+	"\x11GetUsersStreaming\x12\x13.data.StreamRequest\x1a\x0f.data.UserChunk0\x01B\tZ\a./protob\x06proto3"
 
 var (
 	file_data_proto_rawDescOnce sync.Once
@@ -516,7 +446,7 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_data_proto_goTypes = []any{
 	(*Empty)(nil),         // 0: data.Empty
 	(*StreamRequest)(nil), // 1: data.StreamRequest
@@ -524,7 +454,6 @@ var file_data_proto_goTypes = []any{
 	(*Metadata)(nil),      // 3: data.Metadata
 	(*UserChunk)(nil),     // 4: data.UserChunk
 	(*UsersResponse)(nil), // 5: data.UsersResponse
-	(*StatsResponse)(nil), // 6: data.StatsResponse
 }
 var file_data_proto_depIdxs = []int32{
 	2, // 0: data.UserChunk.users:type_name -> data.User
@@ -533,12 +462,10 @@ var file_data_proto_depIdxs = []int32{
 	2, // 3: data.UsersResponse.users:type_name -> data.User
 	0, // 4: data.DataService.GetUsers:input_type -> data.Empty
 	1, // 5: data.DataService.GetUsersStreaming:input_type -> data.StreamRequest
-	0, // 6: data.DataService.GetStatsOnly:input_type -> data.Empty
-	5, // 7: data.DataService.GetUsers:output_type -> data.UsersResponse
-	4, // 8: data.DataService.GetUsersStreaming:output_type -> data.UserChunk
-	6, // 9: data.DataService.GetStatsOnly:output_type -> data.StatsResponse
-	7, // [7:10] is the sub-list for method output_type
-	4, // [4:7] is the sub-list for method input_type
+	5, // 6: data.DataService.GetUsers:output_type -> data.UsersResponse
+	4, // 7: data.DataService.GetUsersStreaming:output_type -> data.UserChunk
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
 	4, // [4:4] is the sub-list for extension extendee
 	0, // [0:4] is the sub-list for field type_name
@@ -555,7 +482,7 @@ func file_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_data_proto_rawDesc), len(file_data_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

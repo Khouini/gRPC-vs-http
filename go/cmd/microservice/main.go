@@ -19,10 +19,9 @@ import (
 // Server implements the gRPC DataService
 type Server struct {
 	pb.UnimplementedDataServiceServer
-	data        *types.DataFile
-	pbUsers     []*pb.User   // Pre-converted protobuf users
-	pbMetadata  *pb.Metadata // Pre-converted protobuf metadata
-	activeCount int32        // Pre-calculated active user count
+	data       *types.DataFile
+	pbUsers    []*pb.User   // Pre-converted protobuf users
+	pbMetadata *pb.Metadata // Pre-converted protobuf metadata
 }
 
 // NewServer creates a new server instance with loaded data
@@ -31,7 +30,6 @@ func NewServer() *Server {
 
 	// Pre-convert data to protobuf format once at startup
 	pbUsers := make([]*pb.User, len(data.Users))
-	activeCount := int32(0)
 
 	for i, user := range data.Users {
 		pbUsers[i] = &pb.User{
@@ -41,9 +39,6 @@ func NewServer() *Server {
 			Age:    int32(user.Age),
 			City:   user.City,
 			Active: user.Active,
-		}
-		if user.Active {
-			activeCount++
 		}
 	}
 
@@ -55,13 +50,12 @@ func NewServer() *Server {
 		ActualItems:    int32(data.Metadata.ActualItems),
 	}
 
-	log.Printf("Pre-converted %d users to protobuf format (%d active)", len(pbUsers), activeCount)
+	log.Printf("Pre-converted %d users to protobuf format", len(pbUsers))
 
 	return &Server{
-		data:        data,
-		pbUsers:     pbUsers,
-		pbMetadata:  pbMetadata,
-		activeCount: activeCount,
+		data:       data,
+		pbUsers:    pbUsers,
+		pbMetadata: pbMetadata,
 	}
 }
 
@@ -153,15 +147,6 @@ func (s *Server) GetUsersStreaming(req *pb.StreamRequest, stream pb.DataService_
 
 	log.Printf("Completed streaming %d chunks", totalChunks)
 	return nil
-}
-
-// GetStatsOnly returns only statistics without user data (ultra-fast)
-func (s *Server) GetStatsOnly(ctx context.Context, req *pb.Empty) (*pb.StatsResponse, error) {
-	return &pb.StatsResponse{
-		TotalUsers:  int32(len(s.pbUsers)),
-		ActiveUsers: s.activeCount,
-		DataSizeMB:  s.pbMetadata.ActualSizeMB,
-	}, nil
 }
 
 func main() {

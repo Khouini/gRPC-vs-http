@@ -8,7 +8,6 @@ option go_package = "./proto";
 service DataService {
   rpc GetUsers(Empty) returns (UsersResponse);
   rpc GetUsersStreaming(StreamRequest) returns (stream UserChunk);
-  rpc GetStatsOnly(Empty) returns (StatsResponse);
 }
 
 // Empty request message
@@ -51,11 +50,4 @@ message UserChunk {
 message UsersResponse {
   Metadata metadata = 1;
   repeated User users = 2;
-}
-
-// Stats-only response (no user data)
-message StatsResponse {
-  int32 totalUsers = 1;
-  int32 activeUsers = 2;
-  double dataSizeMB = 3;
 }

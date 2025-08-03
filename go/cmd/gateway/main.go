@@ -145,34 +145,6 @@ func (g *GatewayServer) handleStatsStreaming(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// handleStatsFast processes the /stats-fast endpoint (stats only, no user data)
-func (g *GatewayServer) handleStatsFast(c *gin.Context) {
-	startTime := time.Now()
-
-	// Call stats-only gRPC method (ultra-fast)
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	resp, err := g.client.GetStatsOnly(ctx, &pb.Empty{})
-	if err != nil {
-		log.Printf("gRPC stats call failed: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch stats from microservice"})
-		return
-	}
-
-	processTime := time.Since(startTime).Milliseconds()
-
-	stats := types.StatsResponse{
-		TotalUsers:    int(resp.TotalUsers),
-		ActiveUsers:   int(resp.ActiveUsers),
-		InactiveUsers: int(resp.TotalUsers - resp.ActiveUsers),
-		DataSize:      resp.DataSizeMB,
-		ProcessTimeMs: processTime,
-	}
-
-	c.JSON(http.StatusOK, stats)
-}
-
 // setupRoutes configures the HTTP routes
 func (g *GatewayServer) setupRoutes() *gin.Engine {
 	r := gin.Default()
@@ -182,9 +154,6 @@ func (g *GatewayServer) setupRoutes() *gin.Engine {
 
 	// Streaming endpoint (processes data in chunks)
 	r.GET("/stats-streaming", g.handleStatsStreaming)
-
-	// Fast endpoint (stats only, no user data transfer)
-	r.GET("/stats-fast", g.handleStatsFast)
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
@@ -227,7 +196,6 @@ func main() {
 	log.Println("Endpoints:")
 	log.Println("  - GET /stats (original)")
 	log.Println("  - GET /stats-streaming?chunkSize=1000 (chunked streaming)")
-	log.Println("  - GET /stats-fast (stats only, ultra-fast)")
 	log.Println("  - GET /health (health check)")
 
 	if err := router.Run(":8080"); err != nil {
