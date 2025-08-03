@@ -56,11 +56,14 @@ echo ""
 
 # Run performance tests
 if [ "$NODE_RUNNING" = true ]; then
-    test_api "http://localhost:3000/stats" "Node.js HTTP" 100
+    test_api "http://localhost:3000/stats" "Node.js HTTP" 50
 fi
 
 if [ "$GO_RUNNING" = true ]; then
-    test_api "http://localhost:8080/stats" "Go gRPC->HTTP" 100
+    test_api "http://localhost:8080/stats" "Go gRPC (Original)" 50
+    test_api "http://localhost:8080/stats-streaming?chunkSize=1000" "Go gRPC (Streaming 1K chunks)" 50
+    test_api "http://localhost:8080/stats-streaming?chunkSize=5000" "Go gRPC (Streaming 5K chunks)" 50
+    test_api "http://localhost:8080/stats-fast" "Go gRPC (Stats Only)" 100
 fi
 
 # Memory usage comparison
@@ -83,3 +86,6 @@ echo "- Connection keep-alive and pooling"
 echo "- Increased message size limits"
 echo "- Concurrent stream limits"
 echo "- Optimized timeout settings"
+echo "- Chunked streaming for better multiplexing"
+echo "- Stats-only endpoint for ultra-fast queries"
+echo "- Pre-calculated statistics"

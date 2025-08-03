@@ -19,16 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DataService_GetUsers_FullMethodName = "/data.DataService/GetUsers"
+	DataService_GetUsers_FullMethodName          = "/data.DataService/GetUsers"
+	DataService_GetUsersStreaming_FullMethodName = "/data.DataService/GetUsersStreaming"
+	DataService_GetStatsOnly_FullMethodName      = "/data.DataService/GetStatsOnly"
 )
 
 // DataServiceClient is the client API for DataService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// Data service definition
+// Data service definition with streaming support
 type DataServiceClient interface {
 	GetUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UsersResponse, error)
+	GetUsersStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[UserChunk], error)
+	GetStatsOnly(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StatsResponse, error)
 }
 
 type dataServiceClient struct {
@@ -49,13 +53,44 @@ func (c *dataServiceClient) GetUsers(ctx context.Context, in *Empty, opts ...grp
 	return out, nil
 }
 
+func (c *dataServiceClient) GetUsersStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[UserChunk], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &DataService_ServiceDesc.Streams[0], DataService_GetUsersStreaming_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[StreamRequest, UserChunk]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type DataService_GetUsersStreamingClient = grpc.ServerStreamingClient[UserChunk]
+
+func (c *dataServiceClient) GetStatsOnly(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatsResponse)
+	err := c.cc.Invoke(ctx, DataService_GetStatsOnly_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DataServiceServer is the server API for DataService service.
 // All implementations must embed UnimplementedDataServiceServer
 // for forward compatibility.
 //
-// Data service definition
+// Data service definition with streaming support
 type DataServiceServer interface {
 	GetUsers(context.Context, *Empty) (*UsersResponse, error)
+	GetUsersStreaming(*StreamRequest, grpc.ServerStreamingServer[UserChunk]) error
+	GetStatsOnly(context.Context, *Empty) (*StatsResponse, error)
 	mustEmbedUnimplementedDataServiceServer()
 }
 
@@ -68,6 +103,12 @@ type UnimplementedDataServiceServer struct{}
 
 func (UnimplementedDataServiceServer) GetUsers(context.Context, *Empty) (*UsersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsers not implemented")
+}
+func (UnimplementedDataServiceServer) GetUsersStreaming(*StreamRequest, grpc.ServerStreamingServer[UserChunk]) error {
+	return status.Errorf(codes.Unimplemented, "method GetUsersStreaming not implemented")
+}
+func (UnimplementedDataServiceServer) GetStatsOnly(context.Context, *Empty) (*StatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStatsOnly not implemented")
 }
 func (UnimplementedDataServiceServer) mustEmbedUnimplementedDataServiceServer() {}
 func (UnimplementedDataServiceServer) testEmbeddedByValue()                     {}
@@ -108,6 +149,35 @@ func _DataService_GetUsers_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataService_GetUsersStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(StreamRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(DataServiceServer).GetUsersStreaming(m, &grpc.GenericServerStream[StreamRequest, UserChunk]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type DataService_GetUsersStreamingServer = grpc.ServerStreamingServer[UserChunk]
+
+func _DataService_GetStatsOnly_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataServiceServer).GetStatsOnly(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DataService_GetStatsOnly_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataServiceServer).GetStatsOnly(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DataService_ServiceDesc is the grpc.ServiceDesc for DataService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -119,7 +189,17 @@ var DataService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetUsers",
 			Handler:    _DataService_GetUsers_Handler,
 		},
+		{
+			MethodName: "GetStatsOnly",
+			Handler:    _DataService_GetStatsOnly_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetUsersStreaming",
+			Handler:       _DataService_GetUsersStreaming_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "data.proto",
 }

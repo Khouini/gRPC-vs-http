@@ -19,9 +19,10 @@ import (
 // Server implements the gRPC DataService
 type Server struct {
 	pb.UnimplementedDataServiceServer
-	data       *types.DataFile
-	pbUsers    []*pb.User   // Pre-converted protobuf users
-	pbMetadata *pb.Metadata // Pre-converted protobuf metadata
+	data        *types.DataFile
+	pbUsers     []*pb.User   // Pre-converted protobuf users
+	pbMetadata  *pb.Metadata // Pre-converted protobuf metadata
+	activeCount int32        // Pre-calculated active user count
 }
 
 // NewServer creates a new server instance with loaded data
@@ -30,6 +31,8 @@ func NewServer() *Server {
 
 	// Pre-convert data to protobuf format once at startup
 	pbUsers := make([]*pb.User, len(data.Users))
+	activeCount := int32(0)
+
 	for i, user := range data.Users {
 		pbUsers[i] = &pb.User{
 			Id:     int32(user.ID),
@@ -38,6 +41,9 @@ func NewServer() *Server {
 			Age:    int32(user.Age),
 			City:   user.City,
 			Active: user.Active,
+		}
+		if user.Active {
+			activeCount++
 		}
 	}
 
@@ -49,12 +55,13 @@ func NewServer() *Server {
 		ActualItems:    int32(data.Metadata.ActualItems),
 	}
 
-	log.Printf("Pre-converted %d users to protobuf format", len(pbUsers))
+	log.Printf("Pre-converted %d users to protobuf format (%d active)", len(pbUsers), activeCount)
 
 	return &Server{
-		data:       data,
-		pbUsers:    pbUsers,
-		pbMetadata: pbMetadata,
+		data:        data,
+		pbUsers:     pbUsers,
+		pbMetadata:  pbMetadata,
+		activeCount: activeCount,
 	}
 }
 
@@ -94,12 +101,66 @@ func loadData() *types.DataFile {
 	return &data
 }
 
-// GetUsers implements the gRPC method
+// GetUsers implements the gRPC method (original non-streaming)
 func (s *Server) GetUsers(ctx context.Context, req *pb.Empty) (*pb.UsersResponse, error) {
 	// Return pre-converted data - no conversion overhead!
 	return &pb.UsersResponse{
 		Metadata: s.pbMetadata,
 		Users:    s.pbUsers,
+	}, nil
+}
+
+// GetUsersStreaming implements streaming method with chunked data
+func (s *Server) GetUsersStreaming(req *pb.StreamRequest, stream pb.DataService_GetUsersStreamingServer) error {
+	chunkSize := int(req.ChunkSize)
+	if chunkSize <= 0 {
+		chunkSize = 1000 // Default chunk size
+	}
+
+	totalUsers := len(s.pbUsers)
+	totalChunks := (totalUsers + chunkSize - 1) / chunkSize // Ceiling division
+
+	log.Printf("Streaming %d users in %d chunks of size %d", totalUsers, totalChunks, chunkSize)
+
+	for i := 0; i < totalChunks; i++ {
+		start := i * chunkSize
+		end := start + chunkSize
+		if end > totalUsers {
+			end = totalUsers
+		}
+
+		chunk := &pb.UserChunk{
+			Users:       s.pbUsers[start:end],
+			ChunkIndex:  int32(i),
+			TotalChunks: int32(totalChunks),
+			IsLast:      i == totalChunks-1,
+		}
+
+		// Include metadata only in the first chunk
+		if i == 0 {
+			chunk.Metadata = s.pbMetadata
+		}
+
+		// Send chunk through stream
+		if err := stream.Send(chunk); err != nil {
+			log.Printf("Error sending chunk %d: %v", i, err)
+			return err
+		}
+
+		// Small delay to demonstrate streaming (remove in production)
+		// time.Sleep(10 * time.Millisecond)
+	}
+
+	log.Printf("Completed streaming %d chunks", totalChunks)
+	return nil
+}
+
+// GetStatsOnly returns only statistics without user data (ultra-fast)
+func (s *Server) GetStatsOnly(ctx context.Context, req *pb.Empty) (*pb.StatsResponse, error) {
+	return &pb.StatsResponse{
+		TotalUsers:  int32(len(s.pbUsers)),
+		ActiveUsers: s.activeCount,
+		DataSizeMB:  s.pbMetadata.ActualSizeMB,
 	}, nil
 }
 

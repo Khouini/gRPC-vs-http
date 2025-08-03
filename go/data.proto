@@ -4,13 +4,20 @@ package data;
 
 option go_package = "./proto";
 
-// Data service definition
+// Data service definition with streaming support
 service DataService {
   rpc GetUsers(Empty) returns (UsersResponse);
+  rpc GetUsersStreaming(StreamRequest) returns (stream UserChunk);
+  rpc GetStatsOnly(Empty) returns (StatsResponse);
 }
 
 // Empty request message
 message Empty {}
+
+// Stream request with chunk size
+message StreamRequest {
+  int32 chunkSize = 1; // Number of users per chunk (default: 1000)
+}
 
 // User message matching the JSON structure
 message User {
@@ -31,8 +38,24 @@ message Metadata {
   int32 actualItems = 5;
 }
 
+// Chunk of users for streaming
+message UserChunk {
+  repeated User users = 1;
+  int32 chunkIndex = 2;
+  int32 totalChunks = 3;
+  bool isLast = 4;
+  Metadata metadata = 5; // Only included in first chunk
+}
+
 // Response containing users and metadata
 message UsersResponse {
   Metadata metadata = 1;
   repeated User users = 2;
+}
+
+// Stats-only response (no user data)
+message StatsResponse {
+  int32 totalUsers = 1;
+  int32 activeUsers = 2;
+  double dataSizeMB = 3;
 }

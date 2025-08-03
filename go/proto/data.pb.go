@@ -58,6 +58,51 @@ func (*Empty) Descriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{0}
 }
 
+// Stream request with chunk size
+type StreamRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ChunkSize     int32                  `protobuf:"varint,1,opt,name=chunkSize,proto3" json:"chunkSize,omitempty"` // Number of users per chunk (default: 1000)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StreamRequest) Reset() {
+	*x = StreamRequest{}
+	mi := &file_data_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StreamRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamRequest) ProtoMessage() {}
+
+func (x *StreamRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamRequest.ProtoReflect.Descriptor instead.
+func (*StreamRequest) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *StreamRequest) GetChunkSize() int32 {
+	if x != nil {
+		return x.ChunkSize
+	}
+	return 0
+}
+
 // User message matching the JSON structure
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -73,7 +118,7 @@ type User struct {
 
 func (x *User) Reset() {
 	*x = User{}
-	mi := &file_data_proto_msgTypes[1]
+	mi := &file_data_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -85,7 +130,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[1]
+	mi := &file_data_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -98,7 +143,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{1}
+	return file_data_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *User) GetId() int32 {
@@ -157,7 +202,7 @@ type Metadata struct {
 
 func (x *Metadata) Reset() {
 	*x = Metadata{}
-	mi := &file_data_proto_msgTypes[2]
+	mi := &file_data_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -169,7 +214,7 @@ func (x *Metadata) String() string {
 func (*Metadata) ProtoMessage() {}
 
 func (x *Metadata) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[2]
+	mi := &file_data_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -182,7 +227,7 @@ func (x *Metadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Metadata.ProtoReflect.Descriptor instead.
 func (*Metadata) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{2}
+	return file_data_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Metadata) GetGeneratedAt() string {
@@ -220,6 +265,83 @@ func (x *Metadata) GetActualItems() int32 {
 	return 0
 }
 
+// Chunk of users for streaming
+type UserChunk struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	ChunkIndex    int32                  `protobuf:"varint,2,opt,name=chunkIndex,proto3" json:"chunkIndex,omitempty"`
+	TotalChunks   int32                  `protobuf:"varint,3,opt,name=totalChunks,proto3" json:"totalChunks,omitempty"`
+	IsLast        bool                   `protobuf:"varint,4,opt,name=isLast,proto3" json:"isLast,omitempty"`
+	Metadata      *Metadata              `protobuf:"bytes,5,opt,name=metadata,proto3" json:"metadata,omitempty"` // Only included in first chunk
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserChunk) Reset() {
+	*x = UserChunk{}
+	mi := &file_data_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserChunk) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserChunk) ProtoMessage() {}
+
+func (x *UserChunk) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserChunk.ProtoReflect.Descriptor instead.
+func (*UserChunk) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *UserChunk) GetUsers() []*User {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
+func (x *UserChunk) GetChunkIndex() int32 {
+	if x != nil {
+		return x.ChunkIndex
+	}
+	return 0
+}
+
+func (x *UserChunk) GetTotalChunks() int32 {
+	if x != nil {
+		return x.TotalChunks
+	}
+	return 0
+}
+
+func (x *UserChunk) GetIsLast() bool {
+	if x != nil {
+		return x.IsLast
+	}
+	return false
+}
+
+func (x *UserChunk) GetMetadata() *Metadata {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
 // Response containing users and metadata
 type UsersResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -231,7 +353,7 @@ type UsersResponse struct {
 
 func (x *UsersResponse) Reset() {
 	*x = UsersResponse{}
-	mi := &file_data_proto_msgTypes[3]
+	mi := &file_data_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -243,7 +365,7 @@ func (x *UsersResponse) String() string {
 func (*UsersResponse) ProtoMessage() {}
 
 func (x *UsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[3]
+	mi := &file_data_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -256,7 +378,7 @@ func (x *UsersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UsersResponse.ProtoReflect.Descriptor instead.
 func (*UsersResponse) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{3}
+	return file_data_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *UsersResponse) GetMetadata() *Metadata {
@@ -273,13 +395,76 @@ func (x *UsersResponse) GetUsers() []*User {
 	return nil
 }
 
+// Stats-only response (no user data)
+type StatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TotalUsers    int32                  `protobuf:"varint,1,opt,name=totalUsers,proto3" json:"totalUsers,omitempty"`
+	ActiveUsers   int32                  `protobuf:"varint,2,opt,name=activeUsers,proto3" json:"activeUsers,omitempty"`
+	DataSizeMB    float64                `protobuf:"fixed64,3,opt,name=dataSizeMB,proto3" json:"dataSizeMB,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StatsResponse) Reset() {
+	*x = StatsResponse{}
+	mi := &file_data_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StatsResponse) ProtoMessage() {}
+
+func (x *StatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StatsResponse.ProtoReflect.Descriptor instead.
+func (*StatsResponse) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *StatsResponse) GetTotalUsers() int32 {
+	if x != nil {
+		return x.TotalUsers
+	}
+	return 0
+}
+
+func (x *StatsResponse) GetActiveUsers() int32 {
+	if x != nil {
+		return x.ActiveUsers
+	}
+	return 0
+}
+
+func (x *StatsResponse) GetDataSizeMB() float64 {
+	if x != nil {
+		return x.DataSizeMB
+	}
+	return 0
+}
+
 var File_data_proto protoreflect.FileDescriptor
 
 const file_data_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
 	"data.proto\x12\x04data\"\a\n" +
-	"\x05Empty\"~\n" +
+	"\x05Empty\"-\n" +
+	"\rStreamRequest\x12\x1c\n" +
+	"\tchunkSize\x18\x01 \x01(\x05R\tchunkSize\"~\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
@@ -292,13 +477,32 @@ const file_data_proto_rawDesc = "" +
 	"\ftargetSizeMB\x18\x02 \x01(\x01R\ftargetSizeMB\x12&\n" +
 	"\x0eestimatedItems\x18\x03 \x01(\x05R\x0eestimatedItems\x12\"\n" +
 	"\factualSizeMB\x18\x04 \x01(\x01R\factualSizeMB\x12 \n" +
-	"\vactualItems\x18\x05 \x01(\x05R\vactualItems\"]\n" +
+	"\vactualItems\x18\x05 \x01(\x05R\vactualItems\"\xb3\x01\n" +
+	"\tUserChunk\x12 \n" +
+	"\x05users\x18\x01 \x03(\v2\n" +
+	".data.UserR\x05users\x12\x1e\n" +
+	"\n" +
+	"chunkIndex\x18\x02 \x01(\x05R\n" +
+	"chunkIndex\x12 \n" +
+	"\vtotalChunks\x18\x03 \x01(\x05R\vtotalChunks\x12\x16\n" +
+	"\x06isLast\x18\x04 \x01(\bR\x06isLast\x12*\n" +
+	"\bmetadata\x18\x05 \x01(\v2\x0e.data.MetadataR\bmetadata\"]\n" +
 	"\rUsersResponse\x12*\n" +
 	"\bmetadata\x18\x01 \x01(\v2\x0e.data.MetadataR\bmetadata\x12 \n" +
 	"\x05users\x18\x02 \x03(\v2\n" +
-	".data.UserR\x05users2;\n" +
+	".data.UserR\x05users\"q\n" +
+	"\rStatsResponse\x12\x1e\n" +
+	"\n" +
+	"totalUsers\x18\x01 \x01(\x05R\n" +
+	"totalUsers\x12 \n" +
+	"\vactiveUsers\x18\x02 \x01(\x05R\vactiveUsers\x12\x1e\n" +
+	"\n" +
+	"dataSizeMB\x18\x03 \x01(\x01R\n" +
+	"dataSizeMB2\xaa\x01\n" +
 	"\vDataService\x12,\n" +
-	"\bGetUsers\x12\v.data.Empty\x1a\x13.data.UsersResponseB\tZ\a./protob\x06proto3"
+	"\bGetUsers\x12\v.data.Empty\x1a\x13.data.UsersResponse\x12;\n" +
+	"\x11GetUsersStreaming\x12\x13.data.StreamRequest\x1a\x0f.data.UserChunk0\x01\x120\n" +
+	"\fGetStatsOnly\x12\v.data.Empty\x1a\x13.data.StatsResponseB\tZ\a./protob\x06proto3"
 
 var (
 	file_data_proto_rawDescOnce sync.Once
@@ -312,23 +516,32 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_data_proto_goTypes = []any{
 	(*Empty)(nil),         // 0: data.Empty
-	(*User)(nil),          // 1: data.User
-	(*Metadata)(nil),      // 2: data.Metadata
-	(*UsersResponse)(nil), // 3: data.UsersResponse
+	(*StreamRequest)(nil), // 1: data.StreamRequest
+	(*User)(nil),          // 2: data.User
+	(*Metadata)(nil),      // 3: data.Metadata
+	(*UserChunk)(nil),     // 4: data.UserChunk
+	(*UsersResponse)(nil), // 5: data.UsersResponse
+	(*StatsResponse)(nil), // 6: data.StatsResponse
 }
 var file_data_proto_depIdxs = []int32{
-	2, // 0: data.UsersResponse.metadata:type_name -> data.Metadata
-	1, // 1: data.UsersResponse.users:type_name -> data.User
-	0, // 2: data.DataService.GetUsers:input_type -> data.Empty
-	3, // 3: data.DataService.GetUsers:output_type -> data.UsersResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: data.UserChunk.users:type_name -> data.User
+	3, // 1: data.UserChunk.metadata:type_name -> data.Metadata
+	3, // 2: data.UsersResponse.metadata:type_name -> data.Metadata
+	2, // 3: data.UsersResponse.users:type_name -> data.User
+	0, // 4: data.DataService.GetUsers:input_type -> data.Empty
+	1, // 5: data.DataService.GetUsersStreaming:input_type -> data.StreamRequest
+	0, // 6: data.DataService.GetStatsOnly:input_type -> data.Empty
+	5, // 7: data.DataService.GetUsers:output_type -> data.UsersResponse
+	4, // 8: data.DataService.GetUsersStreaming:output_type -> data.UserChunk
+	6, // 9: data.DataService.GetStatsOnly:output_type -> data.StatsResponse
+	7, // [7:10] is the sub-list for method output_type
+	4, // [4:7] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_data_proto_init() }
@@ -342,7 +555,7 @@ func file_data_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_data_proto_rawDesc), len(file_data_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
