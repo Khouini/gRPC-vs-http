@@ -1,0 +1,30 @@
+{
+    "folders": [
+        {
+            "name": "gRPC vs HTTP",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/node_modules": true,
+            "**/bin": true,
+            "**/.git": true,
+            "**/.DS_Store": true
+        },
+        "search.exclude": {
+            "**/node_modules": true,
+            "**/bin": true,
+            "**/*.pb.go": true
+        }
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [],
+        "compounds": []
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": []
+    }
+}

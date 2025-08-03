@@ -1,4 +1,4 @@
-.PHONY: proto deps run-micro run-gateway test clean
+.PHONY: proto deps build run-micro run-gateway test clean
 
 # Generate protobuf files
 proto:
@@ -9,16 +9,21 @@ proto:
 deps:
 	go mod tidy
 
+# Build binaries
+build: proto deps
+	go build -o bin/microservice ./cmd/microservice
+	go build -o bin/gateway ./cmd/gateway
+
 # Setup everything
 setup: proto deps
 
 # Run microservice
 run-micro:
-	go run microservice.go
+	cd cmd/microservice && go run main.go
 
 # Run gateway
 run-gateway:
-	go run gateway.go
+	cd cmd/gateway && go run main.go
 
 # Test the API
 test:
@@ -26,4 +31,4 @@ test:
 
 # Clean generated files
 clean:
-	rm -rf proto/
+	rm -rf proto/ bin/

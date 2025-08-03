@@ -20,7 +20,7 @@ app.get('/stats', async (req, res) => {
 
         // Return processed stats only
         res.json({
-            processTimeMs: processTime
+            processTimeMs: processTime,
             totalUsers: userCount,
             activeUsers: activeUsers,
             inactiveUsers: userCount - activeUsers,

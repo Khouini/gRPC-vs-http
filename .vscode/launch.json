@@ -1,0 +1,89 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Node.js Microservice",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/javascript/microservice.js",
+            "cwd": "${workspaceFolder}/javascript",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "console": "integratedTerminal",
+            "restart": true,
+            "runtimeExecutable": "node",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "name": "Node.js Gateway",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/javascript/gateway.js",
+            "cwd": "${workspaceFolder}/javascript",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "console": "integratedTerminal",
+            "restart": true,
+            "runtimeExecutable": "node",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "name": "Go Microservice",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/go/cmd/microservice",
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "console": "integratedTerminal",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Go Gateway",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/go/cmd/gateway",
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "console": "integratedTerminal",
+            "args": [],
+            "showLog": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Node.js Full Stack",
+            "configurations": [
+                "Node.js Microservice",
+                "Node.js Gateway"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "nodejs",
+                "order": 1
+            }
+        },
+        {
+            "name": "Go Full Stack",
+            "configurations": [
+                "Go Microservice",
+                "Go Gateway"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "golang",
+                "order": 2
+            }
+        }
+    ]
+}
