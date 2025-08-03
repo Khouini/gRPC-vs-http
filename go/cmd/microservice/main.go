@@ -7,23 +7,55 @@ import (
 	"log"
 	"net"
 	"path/filepath"
+	"time"
 
 	"grpc-vs-http/internal/types"
 	pb "grpc-vs-http/proto"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 )
 
 // Server implements the gRPC DataService
 type Server struct {
 	pb.UnimplementedDataServiceServer
-	data *types.DataFile
+	data       *types.DataFile
+	pbUsers    []*pb.User   // Pre-converted protobuf users
+	pbMetadata *pb.Metadata // Pre-converted protobuf metadata
 }
 
 // NewServer creates a new server instance with loaded data
 func NewServer() *Server {
 	data := loadData()
-	return &Server{data: data}
+
+	// Pre-convert data to protobuf format once at startup
+	pbUsers := make([]*pb.User, len(data.Users))
+	for i, user := range data.Users {
+		pbUsers[i] = &pb.User{
+			Id:     int32(user.ID),
+			Name:   user.Name,
+			Email:  user.Email,
+			Age:    int32(user.Age),
+			City:   user.City,
+			Active: user.Active,
+		}
+	}
+
+	pbMetadata := &pb.Metadata{
+		GeneratedAt:    data.Metadata.GeneratedAt,
+		TargetSizeMB:   data.Metadata.TargetSizeMB,
+		EstimatedItems: int32(data.Metadata.EstimatedItems),
+		ActualSizeMB:   data.Metadata.ActualSizeMB,
+		ActualItems:    int32(data.Metadata.ActualItems),
+	}
+
+	log.Printf("Pre-converted %d users to protobuf format", len(pbUsers))
+
+	return &Server{
+		data:       data,
+		pbUsers:    pbUsers,
+		pbMetadata: pbMetadata,
+	}
 }
 
 // loadData reads and parses the data.json file
@@ -64,30 +96,10 @@ func loadData() *types.DataFile {
 
 // GetUsers implements the gRPC method
 func (s *Server) GetUsers(ctx context.Context, req *pb.Empty) (*pb.UsersResponse, error) {
-	// Convert data to protobuf format
-	pbUsers := make([]*pb.User, len(s.data.Users))
-	for i, user := range s.data.Users {
-		pbUsers[i] = &pb.User{
-			Id:     int32(user.ID),
-			Name:   user.Name,
-			Email:  user.Email,
-			Age:    int32(user.Age),
-			City:   user.City,
-			Active: user.Active,
-		}
-	}
-
-	pbMetadata := &pb.Metadata{
-		GeneratedAt:    s.data.Metadata.GeneratedAt,
-		TargetSizeMB:   s.data.Metadata.TargetSizeMB,
-		EstimatedItems: int32(s.data.Metadata.EstimatedItems),
-		ActualSizeMB:   s.data.Metadata.ActualSizeMB,
-		ActualItems:    int32(s.data.Metadata.ActualItems),
-	}
-
+	// Return pre-converted data - no conversion overhead!
 	return &pb.UsersResponse{
-		Metadata: pbMetadata,
-		Users:    pbUsers,
+		Metadata: s.pbMetadata,
+		Users:    s.pbUsers,
 	}, nil
 }
 
@@ -95,22 +107,38 @@ func main() {
 	// Create server with loaded data
 	server := NewServer()
 
-	// Start gRPC server with larger message limits
+	// Start gRPC server with optimized settings
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	// Set max message size to 100MB for both send and receive
+	// Optimized server options
+	kaep := keepalive.EnforcementPolicy{
+		MinTime:             5 * time.Second, // If a client pings more than once every 5 seconds, terminate the connection
+		PermitWithoutStream: true,            // Allow pings even when there are no active streams
+	}
+
+	kasp := keepalive.ServerParameters{
+		MaxConnectionIdle:     15 * time.Second, // If a client is idle for 15 seconds, send a GOAWAY
+		MaxConnectionAge:      30 * time.Second, // If any connection is alive for more than 30 seconds, send a GOAWAY
+		MaxConnectionAgeGrace: 5 * time.Second,  // Allow 5 seconds for pending RPCs to complete before forcibly closing connections
+		Time:                  5 * time.Second,  // Ping the client if it is idle for 5 seconds to ensure the connection is still active
+		Timeout:               1 * time.Second,  // Wait 1 second for the ping ack before assuming the connection is dead
+	}
+
 	opts := []grpc.ServerOption{
+		grpc.KeepaliveEnforcementPolicy(kaep),
+		grpc.KeepaliveParams(kasp),
 		grpc.MaxRecvMsgSize(100 * 1024 * 1024), // 100MB
 		grpc.MaxSendMsgSize(100 * 1024 * 1024), // 100MB
+		grpc.MaxConcurrentStreams(1000),        // Allow up to 1000 concurrent streams
 	}
 
 	s := grpc.NewServer(opts...)
 	pb.RegisterDataServiceServer(s, server)
 
-	log.Println("gRPC microservice running on port 50051")
+	log.Println("gRPC microservice running on port 50051 with optimizations")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}

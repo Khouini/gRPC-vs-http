@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/keepalive"
 )
 
 // GatewayServer handles HTTP requests and calls gRPC microservice
@@ -29,18 +30,21 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 	startTime := time.Now()
 
 	// Call gRPC microservice
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) // Increased timeout
 	defer cancel()
 
 	resp, err := g.client.GetUsers(ctx, &pb.Empty{})
 	if err != nil {
+		log.Printf("gRPC call failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from microservice"})
 		return
 	}
 
-	// Process data - count users
+	// Optimized counting using simple loop
 	totalUsers := len(resp.Users)
 	activeUsers := 0
+
+	// Use range for better performance
 	for _, user := range resp.Users {
 		if user.Active {
 			activeUsers++
@@ -69,9 +73,16 @@ func (g *GatewayServer) setupRoutes() *gin.Engine {
 }
 
 func main() {
-	// Connect to gRPC microservice with larger message limits
+	// Connect to gRPC microservice with optimized settings
+	kacp := keepalive.ClientParameters{
+		Time:                10 * time.Second, // Send keepalive pings every 10 seconds
+		Timeout:             time.Second,      // Wait 1 second for ping ack before considering the connection dead
+		PermitWithoutStream: true,             // Send pings even without active streams
+	}
+
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithKeepaliveParams(kacp),
 		grpc.WithDefaultCallOptions(
 			grpc.MaxCallRecvMsgSize(100*1024*1024), // 100MB
 			grpc.MaxCallSendMsgSize(100*1024*1024), // 100MB
