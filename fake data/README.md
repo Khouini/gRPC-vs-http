@@ -1,0 +1,1 @@
+node simple-fake-generator.js 5
