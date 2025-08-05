@@ -106,7 +106,7 @@ class SimpleFakeGenerator {
     }
 
     generateRooms(hotelId) {
-        const numRooms = 50 + (hotelId % 151); // 50-200 rooms per hotel
+        const numRooms = 20 + (hotelId % 31); // 20-50 rooms per hotel
         const rooms = [];
 
         for (let i = 0; i < numRooms; i++) {
@@ -229,7 +229,7 @@ class SimpleFakeGenerator {
         };
 
         // Generate hotels in batches for better performance
-        const batchSize = 10; // Reduced batch size due to larger hotel objects with 50-200 rooms
+        const batchSize = 50; // Increased batch size due to smaller hotel objects with 20-50 rooms
         let generated = 0;
 
         while (generated < numberOfHotels) {
