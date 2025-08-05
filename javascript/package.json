@@ -1,0 +1,12 @@
+{
+    "name": "grpc-vs-http",
+    "version": "1.0.0",
+    "description": "Simple microservice and gateway example",
+    "scripts": {
+        "start:micro": "node microservice.js",
+        "start:gateway": "node gateway.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}

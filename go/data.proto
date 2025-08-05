@@ -4,13 +4,19 @@ package data;
 
 option go_package = "./proto";
 
-// Data service definition
+// Data service definition with streaming support
 service DataService {
   rpc GetHotels(Empty) returns (HotelsResponse);
+  rpc GetHotelsStreaming(StreamRequest) returns (stream HotelChunk);
 }
 
 // Empty request message
 message Empty {}
+
+// Stream request with chunk size
+message StreamRequest {
+  int32 chunkSize = 1; // Number of hotels per chunk (default: 100)
+}
 
 // Hotel message matching the JSON structure
 message Hotel {
@@ -162,6 +168,15 @@ message Metadata {
   string generatedBy = 3;
   double actualSizeMB = 4;
   int32 actualHotels = 5;
+}
+
+// Chunk of hotels for streaming
+message HotelChunk {
+  repeated Hotel hotels = 1;
+  int32 chunkIndex = 2;
+  int32 totalChunks = 3;
+  bool isLast = 4;
+  Metadata metadata = 5; // Only included in first chunk
 }
 
 // Response containing hotels and metadata

@@ -5,8 +5,8 @@
             "name": "Node.js Microservice",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/nodejs/microservice.js",
-            "cwd": "${workspaceFolder}/nodejs",
+            "program": "${workspaceFolder}/javascript/microservice.js",
+            "cwd": "${workspaceFolder}/javascript",
             "env": {
                 "NODE_ENV": "development"
             },
@@ -20,8 +20,8 @@
             "name": "Node.js Gateway",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/nodejs/gateway.js",
-            "cwd": "${workspaceFolder}/nodejs",
+            "program": "${workspaceFolder}/javascript/gateway.js",
+            "cwd": "${workspaceFolder}/javascript",
             "env": {
                 "NODE_ENV": "development"
             },
