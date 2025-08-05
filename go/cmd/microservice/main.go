@@ -137,9 +137,9 @@ func main() {
 	opts := []grpc.ServerOption{
 		grpc.KeepaliveEnforcementPolicy(kaep),
 		grpc.KeepaliveParams(kasp),
-		grpc.MaxRecvMsgSize(100 * 1024 * 1024), // 100MB
-		grpc.MaxSendMsgSize(100 * 1024 * 1024), // 100MB
-		grpc.MaxConcurrentStreams(1000),        // Allow up to 1000 concurrent streams
+		grpc.MaxRecvMsgSize(1000 * 1024 * 1024), // 1000MB
+		grpc.MaxSendMsgSize(1000 * 1024 * 1024), // 100M0B
+		grpc.MaxConcurrentStreams(1000),         // Allow up to 1000 concurrent streams
 	}
 
 	s := grpc.NewServer(opts...)

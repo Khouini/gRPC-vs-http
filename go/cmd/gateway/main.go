@@ -96,8 +96,8 @@ func main() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithKeepaliveParams(kacp),
 		grpc.WithDefaultCallOptions(
-			grpc.MaxCallRecvMsgSize(100*1024*1024), // 100MB
-			grpc.MaxCallSendMsgSize(100*1024*1024), // 100MB
+			grpc.MaxCallRecvMsgSize(1000*1024*1024), // 1000MB
+			grpc.MaxCallSendMsgSize(1000*1024*1024), // 1000MB
 		),
 	}
 
