@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"grpc-vs-http/internal/types"
 	pb "grpc-vs-http/proto"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +13,14 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
 )
+
+// StatsResponse represents the response from the gateway
+type StatsResponse struct {
+	TotalHotels     int     `json:"totalHotels"`
+	AvailableHotels int     `json:"availableHotels"`
+	DataSize        float64 `json:"dataSize"`
+	ProcessTimeMs   int64   `json:"processTimeMs"`
+}
 
 // GatewayServer handles HTTP requests and calls gRPC microservice
 type GatewayServer struct {
@@ -52,7 +59,7 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 
 	processTime := time.Since(startTime).Milliseconds()
 
-	stats := types.StatsResponse{
+	stats := StatsResponse{
 		TotalHotels:     totalHotels,
 		AvailableHotels: availableHotels,
 		DataSize:        resp.Metadata.ActualSizeMB,
@@ -89,8 +96,8 @@ func main() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithKeepaliveParams(kacp),
 		grpc.WithDefaultCallOptions(
-			grpc.MaxCallRecvMsgSize(100*1024*1024), // 100MB
-			grpc.MaxCallSendMsgSize(100*1024*1024), // 100MB
+			grpc.MaxCallRecvMsgSize(1000*1024*1024), // 100MB
+			grpc.MaxCallSendMsgSize(1000*1024*1024), // 100MB
 		),
 	}
 

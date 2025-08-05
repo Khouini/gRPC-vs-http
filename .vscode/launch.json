@@ -5,8 +5,8 @@
             "name": "Node.js Microservice",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/javascript/microservice.js",
-            "cwd": "${workspaceFolder}/javascript",
+            "program": "${workspaceFolder}/nodejs/microservice.js",
+            "cwd": "${workspaceFolder}/nodejs",
             "env": {
                 "NODE_ENV": "development"
             },
@@ -20,8 +20,8 @@
             "name": "Node.js Gateway",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/javascript/gateway.js",
-            "cwd": "${workspaceFolder}/javascript",
+            "program": "${workspaceFolder}/nodejs/gateway.js",
+            "cwd": "${workspaceFolder}/nodejs",
             "env": {
                 "NODE_ENV": "development"
             },
@@ -60,41 +60,14 @@
             "configurations": [
                 "Node.js Microservice",
                 "Node.js Gateway"
-            ],
-            "stopAll": true,
-            "presentation": {
-                "hidden": false,
-                "group": "nodejs",
-                "order": 1
-            }
+            ]
         },
         {
             "name": "Go Full Stack",
             "configurations": [
                 "Go Microservice",
                 "Go Gateway"
-            ],
-            "stopAll": true,
-            "presentation": {
-                "hidden": false,
-                "group": "golang",
-                "order": 2
-            }
-        },
-        {
-            "name": "Performance Test Setup",
-            "configurations": [
-                "Node.js Microservice",
-                "Node.js Gateway",
-                "Go Microservice",
-                "Go Gateway"
-            ],
-            "stopAll": true,
-            "presentation": {
-                "hidden": false,
-                "group": "testing",
-                "order": 3
-            }
+            ]
         }
     ]
 }
