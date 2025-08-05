@@ -224,55 +224,13 @@ func convertHotelToProto(hotel types.Hotel) *pb.Hotel {
 	return pbHotel
 }
 
-// GetHotels implements the gRPC method (original non-streaming)
+// GetHotels implements the gRPC method
 func (s *Server) GetHotels(ctx context.Context, req *pb.Empty) (*pb.HotelsResponse, error) {
 	// Return pre-converted data - no conversion overhead!
 	return &pb.HotelsResponse{
 		Metadata: s.pbMetadata,
 		Hotels:   s.pbHotels,
 	}, nil
-}
-
-// GetHotelsStreaming implements streaming method with chunked data
-func (s *Server) GetHotelsStreaming(req *pb.StreamRequest, stream pb.DataService_GetHotelsStreamingServer) error {
-	chunkSize := int(req.ChunkSize)
-	if chunkSize <= 0 {
-		chunkSize = 100 // Default chunk size for hotels
-	}
-
-	totalHotels := len(s.pbHotels)
-	totalChunks := (totalHotels + chunkSize - 1) / chunkSize // Ceiling division
-
-	log.Printf("Streaming %d hotels in %d chunks of size %d", totalHotels, totalChunks, chunkSize)
-
-	for i := 0; i < totalChunks; i++ {
-		start := i * chunkSize
-		end := start + chunkSize
-		if end > totalHotels {
-			end = totalHotels
-		}
-
-		chunk := &pb.HotelChunk{
-			Hotels:      s.pbHotels[start:end],
-			ChunkIndex:  int32(i),
-			TotalChunks: int32(totalChunks),
-			IsLast:      i == totalChunks-1,
-		}
-
-		// Include metadata only in the first chunk
-		if i == 0 {
-			chunk.Metadata = s.pbMetadata
-		}
-
-		// Send chunk through stream
-		if err := stream.Send(chunk); err != nil {
-			log.Printf("Error sending chunk %d: %v", i, err)
-			return err
-		}
-	}
-
-	log.Printf("Completed streaming %d chunks", totalChunks)
-	return nil
 }
 
 func main() {
