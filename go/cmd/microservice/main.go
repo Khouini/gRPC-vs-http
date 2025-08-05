@@ -221,6 +221,162 @@ func convertHotelToProto(hotel types.Hotel) *pb.Hotel {
 		}
 	}
 
+	// Convert rooms
+	if hotel.Rooms != nil {
+		pbRooms := make([]*pb.Room, len(hotel.Rooms))
+		for i, room := range hotel.Rooms {
+			pbRoom := &pb.Room{}
+
+			if room.Code != nil {
+				pbRoom.Code = room.Code
+			}
+			if room.Codes != nil {
+				pbRoom.Codes = room.Codes
+			}
+			if room.Name != nil {
+				pbRoom.Name = room.Name
+			}
+			if room.Names != nil {
+				pbRoom.Names = room.Names
+			}
+			if room.Category != nil {
+				pbRoom.Category = room.Category
+			}
+			if room.Total != nil {
+				pbRoom.Total = room.Total
+			}
+			if room.OriginalCode != nil {
+				pbRoom.OriginalCode = room.OriginalCode
+			}
+			if room.OriginalName != nil {
+				pbRoom.OriginalName = room.OriginalName
+			}
+
+			// Convert rates if present
+			if room.Rates != nil {
+				pbRates := make([]*pb.Rate, len(room.Rates))
+				for j, rate := range room.Rates {
+					pbRate := &pb.Rate{}
+
+					if rate.RateKey != nil {
+						pbRate.RateKey = rate.RateKey
+					}
+					if rate.RateClass != nil {
+						pbRate.RateClass = rate.RateClass
+					}
+					if rate.ContractId != nil {
+						pbRate.ContractId = rate.ContractId
+					}
+					if rate.RateType != nil {
+						pbRate.RateType = rate.RateType
+					}
+					if rate.PaymentType != nil {
+						pbRate.PaymentType = rate.PaymentType
+					}
+					if rate.Allotment != nil {
+						pbRate.Allotment = rate.Allotment
+					}
+					if rate.Availability != nil {
+						pbRate.Availability = rate.Availability
+					}
+					if rate.Amount != nil {
+						pbRate.Amount = rate.Amount
+					}
+					if rate.Currency != nil {
+						pbRate.Currency = rate.Currency
+					}
+					if rate.BoardCode != nil {
+						pbRate.BoardCode = rate.BoardCode
+					}
+					if rate.BoardName != nil {
+						pbRate.BoardName = rate.BoardName
+					}
+					if rate.Nrf != nil {
+						pbRate.Nrf = rate.Nrf
+					}
+					if rate.Rooms != nil {
+						pbRate.Rooms = rate.Rooms
+					}
+					if rate.Adults != nil {
+						pbRate.Adults = rate.Adults
+					}
+					if rate.Children != nil {
+						pbRate.Children = rate.Children
+					}
+					if rate.Infant != nil {
+						pbRate.Infant = rate.Infant
+					}
+					if rate.ChildrenAges != nil {
+						pbRate.ChildrenAges = rate.ChildrenAges
+					}
+					if rate.RateComments != nil {
+						pbRate.RateComments = rate.RateComments
+					}
+					if rate.Packaging != nil {
+						pbRate.Packaging = rate.Packaging
+					}
+					if rate.Total != nil {
+						pbRate.Total = rate.Total
+					}
+					if rate.PurchasePrice != nil {
+						pbRate.PurchasePrice = rate.PurchasePrice
+					}
+
+					pbRates[j] = pbRate
+				}
+				pbRoom.Rates = pbRates
+			}
+
+			pbRooms[i] = pbRoom
+		}
+		pbHotel.Rooms = pbRooms
+	}
+
+	// Convert supplements
+	if hotel.Supplements != nil {
+		pbSupplements := make([]*pb.Supplement, len(hotel.Supplements))
+		for i, supplement := range hotel.Supplements {
+			pbSupplement := &pb.Supplement{}
+
+			if supplement.Name != nil {
+				pbSupplement.Name = supplement.Name
+			}
+			if supplement.Amount != nil {
+				pbSupplement.Amount = supplement.Amount
+			}
+			if supplement.Currency != nil {
+				pbSupplement.Currency = supplement.Currency
+			}
+			if supplement.Included != nil {
+				pbSupplement.Included = supplement.Included
+			}
+
+			pbSupplements[i] = pbSupplement
+		}
+		pbHotel.Supplements = pbSupplements
+	}
+
+	// Convert reviews
+	if hotel.Reviews != nil {
+		pbReviews := make([]*pb.HotelReview, len(hotel.Reviews))
+		for i, review := range hotel.Reviews {
+			pbReview := &pb.HotelReview{
+				Id:      review.Id,
+				Rating:  review.Rating,
+				Comment: review.Comment,
+				Author:  review.Author,
+				Date:    review.Date,
+			}
+
+			if review.Subratings != nil {
+				pbReview.Subratings = review.Subratings
+			}
+
+			pbReviews[i] = pbReview
+		}
+		pbHotel.Reviews = pbReviews
+	}
+
 	return pbHotel
 }
 
@@ -231,48 +387,6 @@ func (s *Server) GetHotels(ctx context.Context, req *pb.Empty) (*pb.HotelsRespon
 		Metadata: s.pbMetadata,
 		Hotels:   s.pbHotels,
 	}, nil
-}
-
-// GetHotelsStreaming implements streaming method with chunked data
-func (s *Server) GetHotelsStreaming(req *pb.StreamRequest, stream pb.DataService_GetHotelsStreamingServer) error {
-	chunkSize := int(req.ChunkSize)
-	if chunkSize <= 0 {
-		chunkSize = 100 // Default chunk size for hotels
-	}
-
-	totalHotels := len(s.pbHotels)
-	totalChunks := (totalHotels + chunkSize - 1) / chunkSize // Ceiling division
-
-	log.Printf("Streaming %d hotels in %d chunks of size %d", totalHotels, totalChunks, chunkSize)
-
-	for i := 0; i < totalChunks; i++ {
-		start := i * chunkSize
-		end := start + chunkSize
-		if end > totalHotels {
-			end = totalHotels
-		}
-
-		chunk := &pb.HotelChunk{
-			Hotels:      s.pbHotels[start:end],
-			ChunkIndex:  int32(i),
-			TotalChunks: int32(totalChunks),
-			IsLast:      i == totalChunks-1,
-		}
-
-		// Include metadata only in the first chunk
-		if i == 0 {
-			chunk.Metadata = s.pbMetadata
-		}
-
-		// Send chunk through stream
-		if err := stream.Send(chunk); err != nil {
-			log.Printf("Error sending chunk %d: %v", i, err)
-			return err
-		}
-	}
-
-	log.Printf("Completed streaming %d chunks", totalChunks)
-	return nil
 }
 
 func main() {
@@ -310,7 +424,7 @@ func main() {
 	s := grpc.NewServer(opts...)
 	pb.RegisterDataServiceServer(s, server)
 
-	log.Println("gRPC microservice running on port 50051 with optimizations")
+	log.Println("gRPC microservice running on port 50051")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}

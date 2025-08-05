@@ -19,18 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DataService_GetHotels_FullMethodName          = "/data.DataService/GetHotels"
-	DataService_GetHotelsStreaming_FullMethodName = "/data.DataService/GetHotelsStreaming"
+	DataService_GetHotels_FullMethodName = "/data.DataService/GetHotels"
 )
 
 // DataServiceClient is the client API for DataService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// Data service definition with streaming support
+// Data service definition
 type DataServiceClient interface {
 	GetHotels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HotelsResponse, error)
-	GetHotelsStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotelChunk], error)
 }
 
 type dataServiceClient struct {
@@ -51,33 +49,13 @@ func (c *dataServiceClient) GetHotels(ctx context.Context, in *Empty, opts ...gr
 	return out, nil
 }
 
-func (c *dataServiceClient) GetHotelsStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotelChunk], error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &DataService_ServiceDesc.Streams[0], DataService_GetHotelsStreaming_FullMethodName, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &grpc.GenericClientStream[StreamRequest, HotelChunk]{ClientStream: stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type DataService_GetHotelsStreamingClient = grpc.ServerStreamingClient[HotelChunk]
-
 // DataServiceServer is the server API for DataService service.
 // All implementations must embed UnimplementedDataServiceServer
 // for forward compatibility.
 //
-// Data service definition with streaming support
+// Data service definition
 type DataServiceServer interface {
 	GetHotels(context.Context, *Empty) (*HotelsResponse, error)
-	GetHotelsStreaming(*StreamRequest, grpc.ServerStreamingServer[HotelChunk]) error
 	mustEmbedUnimplementedDataServiceServer()
 }
 
@@ -90,9 +68,6 @@ type UnimplementedDataServiceServer struct{}
 
 func (UnimplementedDataServiceServer) GetHotels(context.Context, *Empty) (*HotelsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHotels not implemented")
-}
-func (UnimplementedDataServiceServer) GetHotelsStreaming(*StreamRequest, grpc.ServerStreamingServer[HotelChunk]) error {
-	return status.Errorf(codes.Unimplemented, "method GetHotelsStreaming not implemented")
 }
 func (UnimplementedDataServiceServer) mustEmbedUnimplementedDataServiceServer() {}
 func (UnimplementedDataServiceServer) testEmbeddedByValue()                     {}
@@ -133,17 +108,6 @@ func _DataService_GetHotels_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DataService_GetHotelsStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(StreamRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(DataServiceServer).GetHotelsStreaming(m, &grpc.GenericServerStream[StreamRequest, HotelChunk]{ServerStream: stream})
-}
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type DataService_GetHotelsStreamingServer = grpc.ServerStreamingServer[HotelChunk]
-
 // DataService_ServiceDesc is the grpc.ServiceDesc for DataService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -156,12 +120,6 @@ var DataService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DataService_GetHotels_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "GetHotelsStreaming",
-			Handler:       _DataService_GetHotelsStreaming_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "data.proto",
 }
