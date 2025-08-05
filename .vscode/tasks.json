@@ -2,153 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Install Node.js Dependencies",
+            "label": "kill-all-ports",
             "type": "shell",
-            "command": "npm",
-            "args": [
-                "install"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/javascript"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Generate Go Proto Files",
-            "type": "shell",
-            "command": "make",
-            "args": [
-                "proto"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/go"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Install Go Dependencies",
-            "type": "shell",
-            "command": "go",
-            "args": [
-                "mod",
-                "tidy"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/go"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Build Go Services",
-            "type": "shell",
-            "command": "make",
-            "args": [
-                "build"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}/go"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": [
-                "Generate Go Proto Files"
-            ],
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Test Node.js API",
-            "type": "shell",
-            "command": "curl",
-            "args": [
-                "http://localhost:3000/stats"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Test Go API",
-            "type": "shell",
-            "command": "curl",
-            "args": [
-                "http://localhost:8080/stats"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Generate Test Data",
-            "type": "shell",
-            "command": "node",
-            "args": [
-                "fake data/simple-fake-generator.js",
-                "1",
-                "data.json"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
+            "command": "kill $(lsof -t -i:50001 -i:50021 -i:50024 -i:50028 -i:50039 -i:50042 -i:50047 -i:50088 -i:50103 -i:50104 -i:50111 -i:50117 -i:50162 -i:50200 -i:8088) || true",
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -158,7 +14,24 @@
                 "showReuseMessage": true,
                 "clear": false
             },
-            "problemMatcher": []
+            "problemMatcher": [],
+            "detail": "Kill processes running on specified ports"
+        },
+        {
+            "label": "kill-project-ports",
+            "type": "shell",
+            "command": "kill $(lsof -t -i:3000 -i:3001 -i:8080 -i:50051) || true",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Kill processes running on project ports (3000, 3001, 8080, 50051)"
         }
     ]
 }

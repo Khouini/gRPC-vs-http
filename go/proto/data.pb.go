@@ -61,7 +61,7 @@ func (*Empty) Descriptor() ([]byte, []int) {
 // Stream request with chunk size
 type StreamRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ChunkSize     int32                  `protobuf:"varint,1,opt,name=chunkSize,proto3" json:"chunkSize,omitempty"` // Number of users per chunk (default: 1000)
+	ChunkSize     int32                  `protobuf:"varint,1,opt,name=chunkSize,proto3" json:"chunkSize,omitempty"` // Number of hotels per chunk (default: 100)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -103,33 +103,70 @@ func (x *StreamRequest) GetChunkSize() int32 {
 	return 0
 }
 
-// User message matching the JSON structure
-type User struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Age           int32                  `protobuf:"varint,4,opt,name=age,proto3" json:"age,omitempty"`
-	City          string                 `protobuf:"bytes,5,opt,name=city,proto3" json:"city,omitempty"`
-	Active        bool                   `protobuf:"varint,6,opt,name=active,proto3" json:"active,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+// Hotel message matching the JSON structure
+type Hotel struct {
+	state                    protoimpl.MessageState `protogen:"open.v1"`
+	SupplierId               *int32                 `protobuf:"varint,1,opt,name=supplierId,proto3,oneof" json:"supplierId,omitempty"`
+	SupplierIds              []int32                `protobuf:"varint,2,rep,packed,name=supplierIds,proto3" json:"supplierIds,omitempty"`
+	HotelId                  *string                `protobuf:"bytes,3,opt,name=hotelId,proto3,oneof" json:"hotelId,omitempty"`
+	HotelIds                 []string               `protobuf:"bytes,4,rep,name=hotelIds,proto3" json:"hotelIds,omitempty"`
+	GiataId                  *int32                 `protobuf:"varint,5,opt,name=giataId,proto3,oneof" json:"giataId,omitempty"`
+	HUid                     *int32                 `protobuf:"varint,6,opt,name=hUid,proto3,oneof" json:"hUid,omitempty"`
+	Name                     *string                `protobuf:"bytes,7,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Rating                   *float32               `protobuf:"fixed32,8,opt,name=rating,proto3,oneof" json:"rating,omitempty"`
+	Address                  *string                `protobuf:"bytes,9,opt,name=address,proto3,oneof" json:"address,omitempty"`
+	Score                    *float64               `protobuf:"fixed64,10,opt,name=score,proto3,oneof" json:"score,omitempty"`
+	HotelChainId             *int32                 `protobuf:"varint,11,opt,name=hotelChainId,proto3,oneof" json:"hotelChainId,omitempty"`
+	AccTypeId                *int32                 `protobuf:"varint,12,opt,name=accTypeId,proto3,oneof" json:"accTypeId,omitempty"`
+	City                     *string                `protobuf:"bytes,13,opt,name=city,proto3,oneof" json:"city,omitempty"`
+	CityId                   *int32                 `protobuf:"varint,14,opt,name=cityId,proto3,oneof" json:"cityId,omitempty"`
+	ZoneId                   int32                  `protobuf:"varint,15,opt,name=zoneId,proto3" json:"zoneId,omitempty"`
+	Zone                     string                 `protobuf:"bytes,16,opt,name=zone,proto3" json:"zone,omitempty"`
+	Country                  *string                `protobuf:"bytes,17,opt,name=country,proto3,oneof" json:"country,omitempty"`
+	CountryCode              *string                `protobuf:"bytes,18,opt,name=countryCode,proto3,oneof" json:"countryCode,omitempty"`
+	CountryId                *int32                 `protobuf:"varint,19,opt,name=countryId,proto3,oneof" json:"countryId,omitempty"`
+	Lat                      *float64               `protobuf:"fixed64,20,opt,name=lat,proto3,oneof" json:"lat,omitempty"`
+	Long                     *float64               `protobuf:"fixed64,21,opt,name=long,proto3,oneof" json:"long,omitempty"`
+	MarketingText            *string                `protobuf:"bytes,22,opt,name=marketingText,proto3,oneof" json:"marketingText,omitempty"`
+	MinRate                  *float64               `protobuf:"fixed64,23,opt,name=minRate,proto3,oneof" json:"minRate,omitempty"`
+	MaxRate                  *float64               `protobuf:"fixed64,24,opt,name=maxRate,proto3,oneof" json:"maxRate,omitempty"`
+	Currency                 *string                `protobuf:"bytes,25,opt,name=currency,proto3,oneof" json:"currency,omitempty"`
+	Photos                   []string               `protobuf:"bytes,26,rep,name=photos,proto3" json:"photos,omitempty"`
+	Rooms                    []*Room                `protobuf:"bytes,27,rep,name=rooms,proto3" json:"rooms,omitempty"`
+	Supplements              []*Supplement          `protobuf:"bytes,28,rep,name=supplements,proto3" json:"supplements,omitempty"`
+	Total                    *float32               `protobuf:"fixed32,29,opt,name=total,proto3,oneof" json:"total,omitempty"`
+	Distances                map[string]float32     `protobuf:"bytes,30,rep,name=distances,proto3" json:"distances,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed32,2,opt,name=value"`
+	Neighborhood             *Neighborhood          `protobuf:"bytes,31,opt,name=neighborhood,proto3,oneof" json:"neighborhood,omitempty"`
+	Strength                 map[string]bool        `protobuf:"bytes,32,rep,name=strength,proto3" json:"strength,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	Review                   *Review                `protobuf:"bytes,33,opt,name=review,proto3,oneof" json:"review,omitempty"`
+	Available                *bool                  `protobuf:"varint,34,opt,name=available,proto3,oneof" json:"available,omitempty"`
+	Boards                   []string               `protobuf:"bytes,37,rep,name=boards,proto3" json:"boards,omitempty"`
+	ReviewsSubratingsAverage map[string]float32     `protobuf:"bytes,47,rep,name=reviewsSubratingsAverage,proto3" json:"reviewsSubratingsAverage,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed32,2,opt,name=value"`
+	Tag                      *string                `protobuf:"bytes,48,opt,name=tag,proto3,oneof" json:"tag,omitempty"`
+	CityLat                  *float64               `protobuf:"fixed64,44,opt,name=cityLat,proto3,oneof" json:"cityLat,omitempty"`
+	CityLong                 *float64               `protobuf:"fixed64,45,opt,name=cityLong,proto3,oneof" json:"cityLong,omitempty"`
+	Reviews                  []*HotelReview         `protobuf:"bytes,46,rep,name=reviews,proto3" json:"reviews,omitempty"`
+	AllNRF                   *bool                  `protobuf:"varint,41,opt,name=allNRF,proto3,oneof" json:"allNRF,omitempty"`
+	AllRF                    *bool                  `protobuf:"varint,42,opt,name=allRF,proto3,oneof" json:"allRF,omitempty"`
+	PartialNRF               *bool                  `protobuf:"varint,43,opt,name=partialNRF,proto3,oneof" json:"partialNRF,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
-func (x *User) Reset() {
-	*x = User{}
+func (x *Hotel) Reset() {
+	*x = Hotel{}
 	mi := &file_data_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *User) String() string {
+func (x *Hotel) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*User) ProtoMessage() {}
+func (*Hotel) ProtoMessage() {}
 
-func (x *User) ProtoReflect() protoreflect.Message {
+func (x *Hotel) ProtoReflect() protoreflect.Message {
 	mi := &file_data_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -141,68 +178,1215 @@ func (x *User) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use User.ProtoReflect.Descriptor instead.
-func (*User) Descriptor() ([]byte, []int) {
+// Deprecated: Use Hotel.ProtoReflect.Descriptor instead.
+func (*Hotel) Descriptor() ([]byte, []int) {
 	return file_data_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *User) GetId() int32 {
-	if x != nil {
-		return x.Id
+func (x *Hotel) GetSupplierId() int32 {
+	if x != nil && x.SupplierId != nil {
+		return *x.SupplierId
 	}
 	return 0
 }
 
-func (x *User) GetName() string {
+func (x *Hotel) GetSupplierIds() []int32 {
+	if x != nil {
+		return x.SupplierIds
+	}
+	return nil
+}
+
+func (x *Hotel) GetHotelId() string {
+	if x != nil && x.HotelId != nil {
+		return *x.HotelId
+	}
+	return ""
+}
+
+func (x *Hotel) GetHotelIds() []string {
+	if x != nil {
+		return x.HotelIds
+	}
+	return nil
+}
+
+func (x *Hotel) GetGiataId() int32 {
+	if x != nil && x.GiataId != nil {
+		return *x.GiataId
+	}
+	return 0
+}
+
+func (x *Hotel) GetHUid() int32 {
+	if x != nil && x.HUid != nil {
+		return *x.HUid
+	}
+	return 0
+}
+
+func (x *Hotel) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *Hotel) GetRating() float32 {
+	if x != nil && x.Rating != nil {
+		return *x.Rating
+	}
+	return 0
+}
+
+func (x *Hotel) GetAddress() string {
+	if x != nil && x.Address != nil {
+		return *x.Address
+	}
+	return ""
+}
+
+func (x *Hotel) GetScore() float64 {
+	if x != nil && x.Score != nil {
+		return *x.Score
+	}
+	return 0
+}
+
+func (x *Hotel) GetHotelChainId() int32 {
+	if x != nil && x.HotelChainId != nil {
+		return *x.HotelChainId
+	}
+	return 0
+}
+
+func (x *Hotel) GetAccTypeId() int32 {
+	if x != nil && x.AccTypeId != nil {
+		return *x.AccTypeId
+	}
+	return 0
+}
+
+func (x *Hotel) GetCity() string {
+	if x != nil && x.City != nil {
+		return *x.City
+	}
+	return ""
+}
+
+func (x *Hotel) GetCityId() int32 {
+	if x != nil && x.CityId != nil {
+		return *x.CityId
+	}
+	return 0
+}
+
+func (x *Hotel) GetZoneId() int32 {
+	if x != nil {
+		return x.ZoneId
+	}
+	return 0
+}
+
+func (x *Hotel) GetZone() string {
+	if x != nil {
+		return x.Zone
+	}
+	return ""
+}
+
+func (x *Hotel) GetCountry() string {
+	if x != nil && x.Country != nil {
+		return *x.Country
+	}
+	return ""
+}
+
+func (x *Hotel) GetCountryCode() string {
+	if x != nil && x.CountryCode != nil {
+		return *x.CountryCode
+	}
+	return ""
+}
+
+func (x *Hotel) GetCountryId() int32 {
+	if x != nil && x.CountryId != nil {
+		return *x.CountryId
+	}
+	return 0
+}
+
+func (x *Hotel) GetLat() float64 {
+	if x != nil && x.Lat != nil {
+		return *x.Lat
+	}
+	return 0
+}
+
+func (x *Hotel) GetLong() float64 {
+	if x != nil && x.Long != nil {
+		return *x.Long
+	}
+	return 0
+}
+
+func (x *Hotel) GetMarketingText() string {
+	if x != nil && x.MarketingText != nil {
+		return *x.MarketingText
+	}
+	return ""
+}
+
+func (x *Hotel) GetMinRate() float64 {
+	if x != nil && x.MinRate != nil {
+		return *x.MinRate
+	}
+	return 0
+}
+
+func (x *Hotel) GetMaxRate() float64 {
+	if x != nil && x.MaxRate != nil {
+		return *x.MaxRate
+	}
+	return 0
+}
+
+func (x *Hotel) GetCurrency() string {
+	if x != nil && x.Currency != nil {
+		return *x.Currency
+	}
+	return ""
+}
+
+func (x *Hotel) GetPhotos() []string {
+	if x != nil {
+		return x.Photos
+	}
+	return nil
+}
+
+func (x *Hotel) GetRooms() []*Room {
+	if x != nil {
+		return x.Rooms
+	}
+	return nil
+}
+
+func (x *Hotel) GetSupplements() []*Supplement {
+	if x != nil {
+		return x.Supplements
+	}
+	return nil
+}
+
+func (x *Hotel) GetTotal() float32 {
+	if x != nil && x.Total != nil {
+		return *x.Total
+	}
+	return 0
+}
+
+func (x *Hotel) GetDistances() map[string]float32 {
+	if x != nil {
+		return x.Distances
+	}
+	return nil
+}
+
+func (x *Hotel) GetNeighborhood() *Neighborhood {
+	if x != nil {
+		return x.Neighborhood
+	}
+	return nil
+}
+
+func (x *Hotel) GetStrength() map[string]bool {
+	if x != nil {
+		return x.Strength
+	}
+	return nil
+}
+
+func (x *Hotel) GetReview() *Review {
+	if x != nil {
+		return x.Review
+	}
+	return nil
+}
+
+func (x *Hotel) GetAvailable() bool {
+	if x != nil && x.Available != nil {
+		return *x.Available
+	}
+	return false
+}
+
+func (x *Hotel) GetBoards() []string {
+	if x != nil {
+		return x.Boards
+	}
+	return nil
+}
+
+func (x *Hotel) GetReviewsSubratingsAverage() map[string]float32 {
+	if x != nil {
+		return x.ReviewsSubratingsAverage
+	}
+	return nil
+}
+
+func (x *Hotel) GetTag() string {
+	if x != nil && x.Tag != nil {
+		return *x.Tag
+	}
+	return ""
+}
+
+func (x *Hotel) GetCityLat() float64 {
+	if x != nil && x.CityLat != nil {
+		return *x.CityLat
+	}
+	return 0
+}
+
+func (x *Hotel) GetCityLong() float64 {
+	if x != nil && x.CityLong != nil {
+		return *x.CityLong
+	}
+	return 0
+}
+
+func (x *Hotel) GetReviews() []*HotelReview {
+	if x != nil {
+		return x.Reviews
+	}
+	return nil
+}
+
+func (x *Hotel) GetAllNRF() bool {
+	if x != nil && x.AllNRF != nil {
+		return *x.AllNRF
+	}
+	return false
+}
+
+func (x *Hotel) GetAllRF() bool {
+	if x != nil && x.AllRF != nil {
+		return *x.AllRF
+	}
+	return false
+}
+
+func (x *Hotel) GetPartialNRF() bool {
+	if x != nil && x.PartialNRF != nil {
+		return *x.PartialNRF
+	}
+	return false
+}
+
+type Room struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          *string                `protobuf:"bytes,1,opt,name=code,proto3,oneof" json:"code,omitempty"`
+	Codes         []string               `protobuf:"bytes,2,rep,name=codes,proto3" json:"codes,omitempty"`
+	Name          *string                `protobuf:"bytes,3,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Names         []string               `protobuf:"bytes,4,rep,name=names,proto3" json:"names,omitempty"`
+	Rates         []*Rate                `protobuf:"bytes,5,rep,name=rates,proto3" json:"rates,omitempty"`
+	Category      *string                `protobuf:"bytes,6,opt,name=category,proto3,oneof" json:"category,omitempty"`
+	Total         *float64               `protobuf:"fixed64,7,opt,name=total,proto3,oneof" json:"total,omitempty"`
+	OriginalCode  *string                `protobuf:"bytes,9,opt,name=originalCode,proto3,oneof" json:"originalCode,omitempty"`
+	OriginalName  *string                `protobuf:"bytes,10,opt,name=originalName,proto3,oneof" json:"originalName,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Room) Reset() {
+	*x = Room{}
+	mi := &file_data_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Room) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Room) ProtoMessage() {}
+
+func (x *Room) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Room.ProtoReflect.Descriptor instead.
+func (*Room) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Room) GetCode() string {
+	if x != nil && x.Code != nil {
+		return *x.Code
+	}
+	return ""
+}
+
+func (x *Room) GetCodes() []string {
+	if x != nil {
+		return x.Codes
+	}
+	return nil
+}
+
+func (x *Room) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *Room) GetNames() []string {
+	if x != nil {
+		return x.Names
+	}
+	return nil
+}
+
+func (x *Room) GetRates() []*Rate {
+	if x != nil {
+		return x.Rates
+	}
+	return nil
+}
+
+func (x *Room) GetCategory() string {
+	if x != nil && x.Category != nil {
+		return *x.Category
+	}
+	return ""
+}
+
+func (x *Room) GetTotal() float64 {
+	if x != nil && x.Total != nil {
+		return *x.Total
+	}
+	return 0
+}
+
+func (x *Room) GetOriginalCode() string {
+	if x != nil && x.OriginalCode != nil {
+		return *x.OriginalCode
+	}
+	return ""
+}
+
+func (x *Room) GetOriginalName() string {
+	if x != nil && x.OriginalName != nil {
+		return *x.OriginalName
+	}
+	return ""
+}
+
+type Rate struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	RateKey              *string                `protobuf:"bytes,1,opt,name=rateKey,proto3,oneof" json:"rateKey,omitempty"`
+	RateClass            *string                `protobuf:"bytes,2,opt,name=rateClass,proto3,oneof" json:"rateClass,omitempty"`
+	ContractId           *int32                 `protobuf:"varint,3,opt,name=contractId,proto3,oneof" json:"contractId,omitempty"`
+	RateType             *string                `protobuf:"bytes,4,opt,name=rateType,proto3,oneof" json:"rateType,omitempty"`
+	PaymentType          *string                `protobuf:"bytes,5,opt,name=paymentType,proto3,oneof" json:"paymentType,omitempty"`
+	Allotment            *int32                 `protobuf:"varint,6,opt,name=allotment,proto3,oneof" json:"allotment,omitempty"`
+	Availability         *string                `protobuf:"bytes,7,opt,name=availability,proto3,oneof" json:"availability,omitempty"`
+	Amount               *float64               `protobuf:"fixed64,8,opt,name=amount,proto3,oneof" json:"amount,omitempty"`
+	Currency             *string                `protobuf:"bytes,9,opt,name=currency,proto3,oneof" json:"currency,omitempty"`
+	BoardCode            *string                `protobuf:"bytes,10,opt,name=boardCode,proto3,oneof" json:"boardCode,omitempty"`
+	BoardName            *string                `protobuf:"bytes,11,opt,name=boardName,proto3,oneof" json:"boardName,omitempty"`
+	Nrf                  *bool                  `protobuf:"varint,12,opt,name=nrf,proto3,oneof" json:"nrf,omitempty"`
+	CancellationPolicies []*CancellationPolicy  `protobuf:"bytes,13,rep,name=cancellationPolicies,proto3" json:"cancellationPolicies,omitempty"`
+	Offers               []*Offer               `protobuf:"bytes,14,rep,name=offers,proto3" json:"offers,omitempty"`
+	Promotions           []*Promotion           `protobuf:"bytes,15,rep,name=promotions,proto3" json:"promotions,omitempty"`
+	Supplements          []*Supplement          `protobuf:"bytes,16,rep,name=supplements,proto3" json:"supplements,omitempty"`
+	Taxes                []*Tax                 `protobuf:"bytes,17,rep,name=taxes,proto3" json:"taxes,omitempty"`
+	Rooms                *int32                 `protobuf:"varint,18,opt,name=rooms,proto3,oneof" json:"rooms,omitempty"`
+	Adults               *string                `protobuf:"bytes,19,opt,name=adults,proto3,oneof" json:"adults,omitempty"`
+	Children             *string                `protobuf:"bytes,20,opt,name=children,proto3,oneof" json:"children,omitempty"`
+	Infant               *string                `protobuf:"bytes,21,opt,name=infant,proto3,oneof" json:"infant,omitempty"`
+	ChildrenAges         *string                `protobuf:"bytes,22,opt,name=childrenAges,proto3,oneof" json:"childrenAges,omitempty"`
+	RateComments         *string                `protobuf:"bytes,23,opt,name=rateComments,proto3,oneof" json:"rateComments,omitempty"`
+	Packaging            *bool                  `protobuf:"varint,24,opt,name=packaging,proto3,oneof" json:"packaging,omitempty"`
+	Total                *float64               `protobuf:"fixed64,25,opt,name=total,proto3,oneof" json:"total,omitempty"`
+	PurchasePrice        *float64               `protobuf:"fixed64,26,opt,name=purchasePrice,proto3,oneof" json:"purchasePrice,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *Rate) Reset() {
+	*x = Rate{}
+	mi := &file_data_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Rate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Rate) ProtoMessage() {}
+
+func (x *Rate) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Rate.ProtoReflect.Descriptor instead.
+func (*Rate) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Rate) GetRateKey() string {
+	if x != nil && x.RateKey != nil {
+		return *x.RateKey
+	}
+	return ""
+}
+
+func (x *Rate) GetRateClass() string {
+	if x != nil && x.RateClass != nil {
+		return *x.RateClass
+	}
+	return ""
+}
+
+func (x *Rate) GetContractId() int32 {
+	if x != nil && x.ContractId != nil {
+		return *x.ContractId
+	}
+	return 0
+}
+
+func (x *Rate) GetRateType() string {
+	if x != nil && x.RateType != nil {
+		return *x.RateType
+	}
+	return ""
+}
+
+func (x *Rate) GetPaymentType() string {
+	if x != nil && x.PaymentType != nil {
+		return *x.PaymentType
+	}
+	return ""
+}
+
+func (x *Rate) GetAllotment() int32 {
+	if x != nil && x.Allotment != nil {
+		return *x.Allotment
+	}
+	return 0
+}
+
+func (x *Rate) GetAvailability() string {
+	if x != nil && x.Availability != nil {
+		return *x.Availability
+	}
+	return ""
+}
+
+func (x *Rate) GetAmount() float64 {
+	if x != nil && x.Amount != nil {
+		return *x.Amount
+	}
+	return 0
+}
+
+func (x *Rate) GetCurrency() string {
+	if x != nil && x.Currency != nil {
+		return *x.Currency
+	}
+	return ""
+}
+
+func (x *Rate) GetBoardCode() string {
+	if x != nil && x.BoardCode != nil {
+		return *x.BoardCode
+	}
+	return ""
+}
+
+func (x *Rate) GetBoardName() string {
+	if x != nil && x.BoardName != nil {
+		return *x.BoardName
+	}
+	return ""
+}
+
+func (x *Rate) GetNrf() bool {
+	if x != nil && x.Nrf != nil {
+		return *x.Nrf
+	}
+	return false
+}
+
+func (x *Rate) GetCancellationPolicies() []*CancellationPolicy {
+	if x != nil {
+		return x.CancellationPolicies
+	}
+	return nil
+}
+
+func (x *Rate) GetOffers() []*Offer {
+	if x != nil {
+		return x.Offers
+	}
+	return nil
+}
+
+func (x *Rate) GetPromotions() []*Promotion {
+	if x != nil {
+		return x.Promotions
+	}
+	return nil
+}
+
+func (x *Rate) GetSupplements() []*Supplement {
+	if x != nil {
+		return x.Supplements
+	}
+	return nil
+}
+
+func (x *Rate) GetTaxes() []*Tax {
+	if x != nil {
+		return x.Taxes
+	}
+	return nil
+}
+
+func (x *Rate) GetRooms() int32 {
+	if x != nil && x.Rooms != nil {
+		return *x.Rooms
+	}
+	return 0
+}
+
+func (x *Rate) GetAdults() string {
+	if x != nil && x.Adults != nil {
+		return *x.Adults
+	}
+	return ""
+}
+
+func (x *Rate) GetChildren() string {
+	if x != nil && x.Children != nil {
+		return *x.Children
+	}
+	return ""
+}
+
+func (x *Rate) GetInfant() string {
+	if x != nil && x.Infant != nil {
+		return *x.Infant
+	}
+	return ""
+}
+
+func (x *Rate) GetChildrenAges() string {
+	if x != nil && x.ChildrenAges != nil {
+		return *x.ChildrenAges
+	}
+	return ""
+}
+
+func (x *Rate) GetRateComments() string {
+	if x != nil && x.RateComments != nil {
+		return *x.RateComments
+	}
+	return ""
+}
+
+func (x *Rate) GetPackaging() bool {
+	if x != nil && x.Packaging != nil {
+		return *x.Packaging
+	}
+	return false
+}
+
+func (x *Rate) GetTotal() float64 {
+	if x != nil && x.Total != nil {
+		return *x.Total
+	}
+	return 0
+}
+
+func (x *Rate) GetPurchasePrice() float64 {
+	if x != nil && x.PurchasePrice != nil {
+		return *x.PurchasePrice
+	}
+	return 0
+}
+
+type CancellationPolicy struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Amount        *float64               `protobuf:"fixed64,1,opt,name=amount,proto3,oneof" json:"amount,omitempty"`
+	From          *string                `protobuf:"bytes,2,opt,name=from,proto3,oneof" json:"from,omitempty"`
+	RealFrom      *string                `protobuf:"bytes,3,opt,name=realFrom,proto3,oneof" json:"realFrom,omitempty"`
+	Name          *string                `protobuf:"bytes,4,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	PurchasePrice *float64               `protobuf:"fixed64,5,opt,name=purchasePrice,proto3,oneof" json:"purchasePrice,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CancellationPolicy) Reset() {
+	*x = CancellationPolicy{}
+	mi := &file_data_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CancellationPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancellationPolicy) ProtoMessage() {}
+
+func (x *CancellationPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancellationPolicy.ProtoReflect.Descriptor instead.
+func (*CancellationPolicy) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CancellationPolicy) GetAmount() float64 {
+	if x != nil && x.Amount != nil {
+		return *x.Amount
+	}
+	return 0
+}
+
+func (x *CancellationPolicy) GetFrom() string {
+	if x != nil && x.From != nil {
+		return *x.From
+	}
+	return ""
+}
+
+func (x *CancellationPolicy) GetRealFrom() string {
+	if x != nil && x.RealFrom != nil {
+		return *x.RealFrom
+	}
+	return ""
+}
+
+func (x *CancellationPolicy) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *CancellationPolicy) GetPurchasePrice() float64 {
+	if x != nil && x.PurchasePrice != nil {
+		return *x.PurchasePrice
+	}
+	return 0
+}
+
+type Offer struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Amount        *float64               `protobuf:"fixed64,1,opt,name=amount,proto3,oneof" json:"amount,omitempty"`
+	Code          *string                `protobuf:"bytes,2,opt,name=code,proto3,oneof" json:"code,omitempty"`
+	Name          *string                `protobuf:"bytes,3,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Offer) Reset() {
+	*x = Offer{}
+	mi := &file_data_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Offer) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Offer) ProtoMessage() {}
+
+func (x *Offer) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Offer.ProtoReflect.Descriptor instead.
+func (*Offer) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Offer) GetAmount() float64 {
+	if x != nil && x.Amount != nil {
+		return *x.Amount
+	}
+	return 0
+}
+
+func (x *Offer) GetCode() string {
+	if x != nil && x.Code != nil {
+		return *x.Code
+	}
+	return ""
+}
+
+func (x *Offer) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+type Promotion struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Remark        *string                `protobuf:"bytes,1,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
+	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Code          *string                `protobuf:"bytes,3,opt,name=code,proto3,oneof" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Promotion) Reset() {
+	*x = Promotion{}
+	mi := &file_data_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Promotion) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Promotion) ProtoMessage() {}
+
+func (x *Promotion) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Promotion.ProtoReflect.Descriptor instead.
+func (*Promotion) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *Promotion) GetRemark() string {
+	if x != nil && x.Remark != nil {
+		return *x.Remark
+	}
+	return ""
+}
+
+func (x *Promotion) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *Promotion) GetCode() string {
+	if x != nil && x.Code != nil {
+		return *x.Code
+	}
+	return ""
+}
+
+type Supplement struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          *string                `protobuf:"bytes,1,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Amount        *float64               `protobuf:"fixed64,2,opt,name=amount,proto3,oneof" json:"amount,omitempty"`
+	Currency      *string                `protobuf:"bytes,3,opt,name=currency,proto3,oneof" json:"currency,omitempty"`
+	Included      *bool                  `protobuf:"varint,4,opt,name=included,proto3,oneof" json:"included,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Supplement) Reset() {
+	*x = Supplement{}
+	mi := &file_data_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Supplement) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Supplement) ProtoMessage() {}
+
+func (x *Supplement) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Supplement.ProtoReflect.Descriptor instead.
+func (*Supplement) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *Supplement) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *Supplement) GetAmount() float64 {
+	if x != nil && x.Amount != nil {
+		return *x.Amount
+	}
+	return 0
+}
+
+func (x *Supplement) GetCurrency() string {
+	if x != nil && x.Currency != nil {
+		return *x.Currency
+	}
+	return ""
+}
+
+func (x *Supplement) GetIncluded() bool {
+	if x != nil && x.Included != nil {
+		return *x.Included
+	}
+	return false
+}
+
+type Tax struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          *string                `protobuf:"bytes,1,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Amount        *float64               `protobuf:"fixed64,2,opt,name=amount,proto3,oneof" json:"amount,omitempty"`
+	Currency      *string                `protobuf:"bytes,3,opt,name=currency,proto3,oneof" json:"currency,omitempty"`
+	Included      *bool                  `protobuf:"varint,4,opt,name=included,proto3,oneof" json:"included,omitempty"`
+	Type          *string                `protobuf:"bytes,5,opt,name=type,proto3,oneof" json:"type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Tax) Reset() {
+	*x = Tax{}
+	mi := &file_data_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Tax) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Tax) ProtoMessage() {}
+
+func (x *Tax) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Tax.ProtoReflect.Descriptor instead.
+func (*Tax) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *Tax) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *Tax) GetAmount() float64 {
+	if x != nil && x.Amount != nil {
+		return *x.Amount
+	}
+	return 0
+}
+
+func (x *Tax) GetCurrency() string {
+	if x != nil && x.Currency != nil {
+		return *x.Currency
+	}
+	return ""
+}
+
+func (x *Tax) GetIncluded() bool {
+	if x != nil && x.Included != nil {
+		return *x.Included
+	}
+	return false
+}
+
+func (x *Tax) GetType() string {
+	if x != nil && x.Type != nil {
+		return *x.Type
+	}
+	return ""
+}
+
+type Neighborhood struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Neighborhood) Reset() {
+	*x = Neighborhood{}
+	mi := &file_data_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Neighborhood) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Neighborhood) ProtoMessage() {}
+
+func (x *Neighborhood) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Neighborhood.ProtoReflect.Descriptor instead.
+func (*Neighborhood) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *Neighborhood) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *User) GetEmail() string {
+func (x *Neighborhood) GetDescription() string {
 	if x != nil {
-		return x.Email
+		return x.Description
 	}
 	return ""
 }
 
-func (x *User) GetAge() int32 {
+type Review struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Score         float64                `protobuf:"fixed64,1,opt,name=score,proto3" json:"score,omitempty"`
+	Count         int32                  `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	Average       float64                `protobuf:"fixed64,3,opt,name=average,proto3" json:"average,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Review) Reset() {
+	*x = Review{}
+	mi := &file_data_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Review) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Review) ProtoMessage() {}
+
+func (x *Review) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[11]
 	if x != nil {
-		return x.Age
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Review.ProtoReflect.Descriptor instead.
+func (*Review) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *Review) GetScore() float64 {
+	if x != nil {
+		return x.Score
 	}
 	return 0
 }
 
-func (x *User) GetCity() string {
+func (x *Review) GetCount() int32 {
 	if x != nil {
-		return x.City
+		return x.Count
+	}
+	return 0
+}
+
+func (x *Review) GetAverage() float64 {
+	if x != nil {
+		return x.Average
+	}
+	return 0
+}
+
+type HotelReview struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Rating        float32                `protobuf:"fixed32,2,opt,name=rating,proto3" json:"rating,omitempty"`
+	Comment       string                 `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
+	Author        string                 `protobuf:"bytes,4,opt,name=author,proto3" json:"author,omitempty"`
+	Date          string                 `protobuf:"bytes,5,opt,name=date,proto3" json:"date,omitempty"`
+	Subratings    map[string]float32     `protobuf:"bytes,6,rep,name=subratings,proto3" json:"subratings,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"fixed32,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HotelReview) Reset() {
+	*x = HotelReview{}
+	mi := &file_data_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HotelReview) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HotelReview) ProtoMessage() {}
+
+func (x *HotelReview) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HotelReview.ProtoReflect.Descriptor instead.
+func (*HotelReview) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *HotelReview) GetId() string {
+	if x != nil {
+		return x.Id
 	}
 	return ""
 }
 
-func (x *User) GetActive() bool {
+func (x *HotelReview) GetRating() float32 {
 	if x != nil {
-		return x.Active
+		return x.Rating
 	}
-	return false
+	return 0
+}
+
+func (x *HotelReview) GetComment() string {
+	if x != nil {
+		return x.Comment
+	}
+	return ""
+}
+
+func (x *HotelReview) GetAuthor() string {
+	if x != nil {
+		return x.Author
+	}
+	return ""
+}
+
+func (x *HotelReview) GetDate() string {
+	if x != nil {
+		return x.Date
+	}
+	return ""
+}
+
+func (x *HotelReview) GetSubratings() map[string]float32 {
+	if x != nil {
+		return x.Subratings
+	}
+	return nil
 }
 
 // Metadata message
 type Metadata struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	GeneratedAt    string                 `protobuf:"bytes,1,opt,name=generatedAt,proto3" json:"generatedAt,omitempty"`
-	TargetSizeMB   float64                `protobuf:"fixed64,2,opt,name=targetSizeMB,proto3" json:"targetSizeMB,omitempty"`
-	EstimatedItems int32                  `protobuf:"varint,3,opt,name=estimatedItems,proto3" json:"estimatedItems,omitempty"`
-	ActualSizeMB   float64                `protobuf:"fixed64,4,opt,name=actualSizeMB,proto3" json:"actualSizeMB,omitempty"`
-	ActualItems    int32                  `protobuf:"varint,5,opt,name=actualItems,proto3" json:"actualItems,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GeneratedAt   string                 `protobuf:"bytes,1,opt,name=generatedAt,proto3" json:"generatedAt,omitempty"`
+	TotalHotels   int32                  `protobuf:"varint,2,opt,name=totalHotels,proto3" json:"totalHotels,omitempty"`
+	GeneratedBy   string                 `protobuf:"bytes,3,opt,name=generatedBy,proto3" json:"generatedBy,omitempty"`
+	ActualSizeMB  float64                `protobuf:"fixed64,4,opt,name=actualSizeMB,proto3" json:"actualSizeMB,omitempty"`
+	ActualHotels  int32                  `protobuf:"varint,5,opt,name=actualHotels,proto3" json:"actualHotels,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Metadata) Reset() {
 	*x = Metadata{}
-	mi := &file_data_proto_msgTypes[3]
+	mi := &file_data_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -214,7 +1398,7 @@ func (x *Metadata) String() string {
 func (*Metadata) ProtoMessage() {}
 
 func (x *Metadata) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[3]
+	mi := &file_data_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -227,7 +1411,7 @@ func (x *Metadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Metadata.ProtoReflect.Descriptor instead.
 func (*Metadata) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{3}
+	return file_data_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Metadata) GetGeneratedAt() string {
@@ -237,18 +1421,18 @@ func (x *Metadata) GetGeneratedAt() string {
 	return ""
 }
 
-func (x *Metadata) GetTargetSizeMB() float64 {
+func (x *Metadata) GetTotalHotels() int32 {
 	if x != nil {
-		return x.TargetSizeMB
+		return x.TotalHotels
 	}
 	return 0
 }
 
-func (x *Metadata) GetEstimatedItems() int32 {
+func (x *Metadata) GetGeneratedBy() string {
 	if x != nil {
-		return x.EstimatedItems
+		return x.GeneratedBy
 	}
-	return 0
+	return ""
 }
 
 func (x *Metadata) GetActualSizeMB() float64 {
@@ -258,17 +1442,17 @@ func (x *Metadata) GetActualSizeMB() float64 {
 	return 0
 }
 
-func (x *Metadata) GetActualItems() int32 {
+func (x *Metadata) GetActualHotels() int32 {
 	if x != nil {
-		return x.ActualItems
+		return x.ActualHotels
 	}
 	return 0
 }
 
-// Chunk of users for streaming
-type UserChunk struct {
+// Chunk of hotels for streaming
+type HotelChunk struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	Hotels        []*Hotel               `protobuf:"bytes,1,rep,name=hotels,proto3" json:"hotels,omitempty"`
 	ChunkIndex    int32                  `protobuf:"varint,2,opt,name=chunkIndex,proto3" json:"chunkIndex,omitempty"`
 	TotalChunks   int32                  `protobuf:"varint,3,opt,name=totalChunks,proto3" json:"totalChunks,omitempty"`
 	IsLast        bool                   `protobuf:"varint,4,opt,name=isLast,proto3" json:"isLast,omitempty"`
@@ -277,21 +1461,21 @@ type UserChunk struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UserChunk) Reset() {
-	*x = UserChunk{}
-	mi := &file_data_proto_msgTypes[4]
+func (x *HotelChunk) Reset() {
+	*x = HotelChunk{}
+	mi := &file_data_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UserChunk) String() string {
+func (x *HotelChunk) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UserChunk) ProtoMessage() {}
+func (*HotelChunk) ProtoMessage() {}
 
-func (x *UserChunk) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[4]
+func (x *HotelChunk) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -302,70 +1486,70 @@ func (x *UserChunk) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UserChunk.ProtoReflect.Descriptor instead.
-func (*UserChunk) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{4}
+// Deprecated: Use HotelChunk.ProtoReflect.Descriptor instead.
+func (*HotelChunk) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *UserChunk) GetUsers() []*User {
+func (x *HotelChunk) GetHotels() []*Hotel {
 	if x != nil {
-		return x.Users
+		return x.Hotels
 	}
 	return nil
 }
 
-func (x *UserChunk) GetChunkIndex() int32 {
+func (x *HotelChunk) GetChunkIndex() int32 {
 	if x != nil {
 		return x.ChunkIndex
 	}
 	return 0
 }
 
-func (x *UserChunk) GetTotalChunks() int32 {
+func (x *HotelChunk) GetTotalChunks() int32 {
 	if x != nil {
 		return x.TotalChunks
 	}
 	return 0
 }
 
-func (x *UserChunk) GetIsLast() bool {
+func (x *HotelChunk) GetIsLast() bool {
 	if x != nil {
 		return x.IsLast
 	}
 	return false
 }
 
-func (x *UserChunk) GetMetadata() *Metadata {
+func (x *HotelChunk) GetMetadata() *Metadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-// Response containing users and metadata
-type UsersResponse struct {
+// Response containing hotels and metadata
+type HotelsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Metadata      *Metadata              `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Users         []*User                `protobuf:"bytes,2,rep,name=users,proto3" json:"users,omitempty"`
+	Hotels        []*Hotel               `protobuf:"bytes,2,rep,name=hotels,proto3" json:"hotels,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UsersResponse) Reset() {
-	*x = UsersResponse{}
-	mi := &file_data_proto_msgTypes[5]
+func (x *HotelsResponse) Reset() {
+	*x = HotelsResponse{}
+	mi := &file_data_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UsersResponse) String() string {
+func (x *HotelsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UsersResponse) ProtoMessage() {}
+func (*HotelsResponse) ProtoMessage() {}
 
-func (x *UsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[5]
+func (x *HotelsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_data_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -376,21 +1560,21 @@ func (x *UsersResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UsersResponse.ProtoReflect.Descriptor instead.
-func (*UsersResponse) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{5}
+// Deprecated: Use HotelsResponse.ProtoReflect.Descriptor instead.
+func (*HotelsResponse) Descriptor() ([]byte, []int) {
+	return file_data_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *UsersResponse) GetMetadata() *Metadata {
+func (x *HotelsResponse) GetMetadata() *Metadata {
 	if x != nil {
 		return x.Metadata
 	}
 	return nil
 }
 
-func (x *UsersResponse) GetUsers() []*User {
+func (x *HotelsResponse) GetHotels() []*Hotel {
 	if x != nil {
-		return x.Users
+		return x.Hotels
 	}
 	return nil
 }
@@ -403,36 +1587,272 @@ const file_data_proto_rawDesc = "" +
 	"data.proto\x12\x04data\"\a\n" +
 	"\x05Empty\"-\n" +
 	"\rStreamRequest\x12\x1c\n" +
-	"\tchunkSize\x18\x01 \x01(\x05R\tchunkSize\"~\n" +
-	"\x04User\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
-	"\x05email\x18\x03 \x01(\tR\x05email\x12\x10\n" +
-	"\x03age\x18\x04 \x01(\x05R\x03age\x12\x12\n" +
-	"\x04city\x18\x05 \x01(\tR\x04city\x12\x16\n" +
-	"\x06active\x18\x06 \x01(\bR\x06active\"\xbe\x01\n" +
+	"\tchunkSize\x18\x01 \x01(\x05R\tchunkSize\"\xa7\x10\n" +
+	"\x05Hotel\x12#\n" +
+	"\n" +
+	"supplierId\x18\x01 \x01(\x05H\x00R\n" +
+	"supplierId\x88\x01\x01\x12 \n" +
+	"\vsupplierIds\x18\x02 \x03(\x05R\vsupplierIds\x12\x1d\n" +
+	"\ahotelId\x18\x03 \x01(\tH\x01R\ahotelId\x88\x01\x01\x12\x1a\n" +
+	"\bhotelIds\x18\x04 \x03(\tR\bhotelIds\x12\x1d\n" +
+	"\agiataId\x18\x05 \x01(\x05H\x02R\agiataId\x88\x01\x01\x12\x17\n" +
+	"\x04hUid\x18\x06 \x01(\x05H\x03R\x04hUid\x88\x01\x01\x12\x17\n" +
+	"\x04name\x18\a \x01(\tH\x04R\x04name\x88\x01\x01\x12\x1b\n" +
+	"\x06rating\x18\b \x01(\x02H\x05R\x06rating\x88\x01\x01\x12\x1d\n" +
+	"\aaddress\x18\t \x01(\tH\x06R\aaddress\x88\x01\x01\x12\x19\n" +
+	"\x05score\x18\n" +
+	" \x01(\x01H\aR\x05score\x88\x01\x01\x12'\n" +
+	"\fhotelChainId\x18\v \x01(\x05H\bR\fhotelChainId\x88\x01\x01\x12!\n" +
+	"\taccTypeId\x18\f \x01(\x05H\tR\taccTypeId\x88\x01\x01\x12\x17\n" +
+	"\x04city\x18\r \x01(\tH\n" +
+	"R\x04city\x88\x01\x01\x12\x1b\n" +
+	"\x06cityId\x18\x0e \x01(\x05H\vR\x06cityId\x88\x01\x01\x12\x16\n" +
+	"\x06zoneId\x18\x0f \x01(\x05R\x06zoneId\x12\x12\n" +
+	"\x04zone\x18\x10 \x01(\tR\x04zone\x12\x1d\n" +
+	"\acountry\x18\x11 \x01(\tH\fR\acountry\x88\x01\x01\x12%\n" +
+	"\vcountryCode\x18\x12 \x01(\tH\rR\vcountryCode\x88\x01\x01\x12!\n" +
+	"\tcountryId\x18\x13 \x01(\x05H\x0eR\tcountryId\x88\x01\x01\x12\x15\n" +
+	"\x03lat\x18\x14 \x01(\x01H\x0fR\x03lat\x88\x01\x01\x12\x17\n" +
+	"\x04long\x18\x15 \x01(\x01H\x10R\x04long\x88\x01\x01\x12)\n" +
+	"\rmarketingText\x18\x16 \x01(\tH\x11R\rmarketingText\x88\x01\x01\x12\x1d\n" +
+	"\aminRate\x18\x17 \x01(\x01H\x12R\aminRate\x88\x01\x01\x12\x1d\n" +
+	"\amaxRate\x18\x18 \x01(\x01H\x13R\amaxRate\x88\x01\x01\x12\x1f\n" +
+	"\bcurrency\x18\x19 \x01(\tH\x14R\bcurrency\x88\x01\x01\x12\x16\n" +
+	"\x06photos\x18\x1a \x03(\tR\x06photos\x12 \n" +
+	"\x05rooms\x18\x1b \x03(\v2\n" +
+	".data.RoomR\x05rooms\x122\n" +
+	"\vsupplements\x18\x1c \x03(\v2\x10.data.SupplementR\vsupplements\x12\x19\n" +
+	"\x05total\x18\x1d \x01(\x02H\x15R\x05total\x88\x01\x01\x128\n" +
+	"\tdistances\x18\x1e \x03(\v2\x1a.data.Hotel.DistancesEntryR\tdistances\x12;\n" +
+	"\fneighborhood\x18\x1f \x01(\v2\x12.data.NeighborhoodH\x16R\fneighborhood\x88\x01\x01\x125\n" +
+	"\bstrength\x18  \x03(\v2\x19.data.Hotel.StrengthEntryR\bstrength\x12)\n" +
+	"\x06review\x18! \x01(\v2\f.data.ReviewH\x17R\x06review\x88\x01\x01\x12!\n" +
+	"\tavailable\x18\" \x01(\bH\x18R\tavailable\x88\x01\x01\x12\x16\n" +
+	"\x06boards\x18% \x03(\tR\x06boards\x12e\n" +
+	"\x18reviewsSubratingsAverage\x18/ \x03(\v2).data.Hotel.ReviewsSubratingsAverageEntryR\x18reviewsSubratingsAverage\x12\x15\n" +
+	"\x03tag\x180 \x01(\tH\x19R\x03tag\x88\x01\x01\x12\x1d\n" +
+	"\acityLat\x18, \x01(\x01H\x1aR\acityLat\x88\x01\x01\x12\x1f\n" +
+	"\bcityLong\x18- \x01(\x01H\x1bR\bcityLong\x88\x01\x01\x12+\n" +
+	"\areviews\x18. \x03(\v2\x11.data.HotelReviewR\areviews\x12\x1b\n" +
+	"\x06allNRF\x18) \x01(\bH\x1cR\x06allNRF\x88\x01\x01\x12\x19\n" +
+	"\x05allRF\x18* \x01(\bH\x1dR\x05allRF\x88\x01\x01\x12#\n" +
+	"\n" +
+	"partialNRF\x18+ \x01(\bH\x1eR\n" +
+	"partialNRF\x88\x01\x01\x1a<\n" +
+	"\x0eDistancesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x02R\x05value:\x028\x01\x1a;\n" +
+	"\rStrengthEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\bR\x05value:\x028\x01\x1aK\n" +
+	"\x1dReviewsSubratingsAverageEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x02R\x05value:\x028\x01B\r\n" +
+	"\v_supplierIdB\n" +
+	"\n" +
+	"\b_hotelIdB\n" +
+	"\n" +
+	"\b_giataIdB\a\n" +
+	"\x05_hUidB\a\n" +
+	"\x05_nameB\t\n" +
+	"\a_ratingB\n" +
+	"\n" +
+	"\b_addressB\b\n" +
+	"\x06_scoreB\x0f\n" +
+	"\r_hotelChainIdB\f\n" +
+	"\n" +
+	"_accTypeIdB\a\n" +
+	"\x05_cityB\t\n" +
+	"\a_cityIdB\n" +
+	"\n" +
+	"\b_countryB\x0e\n" +
+	"\f_countryCodeB\f\n" +
+	"\n" +
+	"_countryIdB\x06\n" +
+	"\x04_latB\a\n" +
+	"\x05_longB\x10\n" +
+	"\x0e_marketingTextB\n" +
+	"\n" +
+	"\b_minRateB\n" +
+	"\n" +
+	"\b_maxRateB\v\n" +
+	"\t_currencyB\b\n" +
+	"\x06_totalB\x0f\n" +
+	"\r_neighborhoodB\t\n" +
+	"\a_reviewB\f\n" +
+	"\n" +
+	"_availableB\x06\n" +
+	"\x04_tagB\n" +
+	"\n" +
+	"\b_cityLatB\v\n" +
+	"\t_cityLongB\t\n" +
+	"\a_allNRFB\b\n" +
+	"\x06_allRFB\r\n" +
+	"\v_partialNRF\"\xdf\x02\n" +
+	"\x04Room\x12\x17\n" +
+	"\x04code\x18\x01 \x01(\tH\x00R\x04code\x88\x01\x01\x12\x14\n" +
+	"\x05codes\x18\x02 \x03(\tR\x05codes\x12\x17\n" +
+	"\x04name\x18\x03 \x01(\tH\x01R\x04name\x88\x01\x01\x12\x14\n" +
+	"\x05names\x18\x04 \x03(\tR\x05names\x12 \n" +
+	"\x05rates\x18\x05 \x03(\v2\n" +
+	".data.RateR\x05rates\x12\x1f\n" +
+	"\bcategory\x18\x06 \x01(\tH\x02R\bcategory\x88\x01\x01\x12\x19\n" +
+	"\x05total\x18\a \x01(\x01H\x03R\x05total\x88\x01\x01\x12'\n" +
+	"\foriginalCode\x18\t \x01(\tH\x04R\foriginalCode\x88\x01\x01\x12'\n" +
+	"\foriginalName\x18\n" +
+	" \x01(\tH\x05R\foriginalName\x88\x01\x01B\a\n" +
+	"\x05_codeB\a\n" +
+	"\x05_nameB\v\n" +
+	"\t_categoryB\b\n" +
+	"\x06_totalB\x0f\n" +
+	"\r_originalCodeB\x0f\n" +
+	"\r_originalName\"\xe0\t\n" +
+	"\x04Rate\x12\x1d\n" +
+	"\arateKey\x18\x01 \x01(\tH\x00R\arateKey\x88\x01\x01\x12!\n" +
+	"\trateClass\x18\x02 \x01(\tH\x01R\trateClass\x88\x01\x01\x12#\n" +
+	"\n" +
+	"contractId\x18\x03 \x01(\x05H\x02R\n" +
+	"contractId\x88\x01\x01\x12\x1f\n" +
+	"\brateType\x18\x04 \x01(\tH\x03R\brateType\x88\x01\x01\x12%\n" +
+	"\vpaymentType\x18\x05 \x01(\tH\x04R\vpaymentType\x88\x01\x01\x12!\n" +
+	"\tallotment\x18\x06 \x01(\x05H\x05R\tallotment\x88\x01\x01\x12'\n" +
+	"\favailability\x18\a \x01(\tH\x06R\favailability\x88\x01\x01\x12\x1b\n" +
+	"\x06amount\x18\b \x01(\x01H\aR\x06amount\x88\x01\x01\x12\x1f\n" +
+	"\bcurrency\x18\t \x01(\tH\bR\bcurrency\x88\x01\x01\x12!\n" +
+	"\tboardCode\x18\n" +
+	" \x01(\tH\tR\tboardCode\x88\x01\x01\x12!\n" +
+	"\tboardName\x18\v \x01(\tH\n" +
+	"R\tboardName\x88\x01\x01\x12\x15\n" +
+	"\x03nrf\x18\f \x01(\bH\vR\x03nrf\x88\x01\x01\x12L\n" +
+	"\x14cancellationPolicies\x18\r \x03(\v2\x18.data.CancellationPolicyR\x14cancellationPolicies\x12#\n" +
+	"\x06offers\x18\x0e \x03(\v2\v.data.OfferR\x06offers\x12/\n" +
+	"\n" +
+	"promotions\x18\x0f \x03(\v2\x0f.data.PromotionR\n" +
+	"promotions\x122\n" +
+	"\vsupplements\x18\x10 \x03(\v2\x10.data.SupplementR\vsupplements\x12\x1f\n" +
+	"\x05taxes\x18\x11 \x03(\v2\t.data.TaxR\x05taxes\x12\x19\n" +
+	"\x05rooms\x18\x12 \x01(\x05H\fR\x05rooms\x88\x01\x01\x12\x1b\n" +
+	"\x06adults\x18\x13 \x01(\tH\rR\x06adults\x88\x01\x01\x12\x1f\n" +
+	"\bchildren\x18\x14 \x01(\tH\x0eR\bchildren\x88\x01\x01\x12\x1b\n" +
+	"\x06infant\x18\x15 \x01(\tH\x0fR\x06infant\x88\x01\x01\x12'\n" +
+	"\fchildrenAges\x18\x16 \x01(\tH\x10R\fchildrenAges\x88\x01\x01\x12'\n" +
+	"\frateComments\x18\x17 \x01(\tH\x11R\frateComments\x88\x01\x01\x12!\n" +
+	"\tpackaging\x18\x18 \x01(\bH\x12R\tpackaging\x88\x01\x01\x12\x19\n" +
+	"\x05total\x18\x19 \x01(\x01H\x13R\x05total\x88\x01\x01\x12)\n" +
+	"\rpurchasePrice\x18\x1a \x01(\x01H\x14R\rpurchasePrice\x88\x01\x01B\n" +
+	"\n" +
+	"\b_rateKeyB\f\n" +
+	"\n" +
+	"_rateClassB\r\n" +
+	"\v_contractIdB\v\n" +
+	"\t_rateTypeB\x0e\n" +
+	"\f_paymentTypeB\f\n" +
+	"\n" +
+	"_allotmentB\x0f\n" +
+	"\r_availabilityB\t\n" +
+	"\a_amountB\v\n" +
+	"\t_currencyB\f\n" +
+	"\n" +
+	"_boardCodeB\f\n" +
+	"\n" +
+	"_boardNameB\x06\n" +
+	"\x04_nrfB\b\n" +
+	"\x06_roomsB\t\n" +
+	"\a_adultsB\v\n" +
+	"\t_childrenB\t\n" +
+	"\a_infantB\x0f\n" +
+	"\r_childrenAgesB\x0f\n" +
+	"\r_rateCommentsB\f\n" +
+	"\n" +
+	"_packagingB\b\n" +
+	"\x06_totalB\x10\n" +
+	"\x0e_purchasePrice\"\xeb\x01\n" +
+	"\x12CancellationPolicy\x12\x1b\n" +
+	"\x06amount\x18\x01 \x01(\x01H\x00R\x06amount\x88\x01\x01\x12\x17\n" +
+	"\x04from\x18\x02 \x01(\tH\x01R\x04from\x88\x01\x01\x12\x1f\n" +
+	"\brealFrom\x18\x03 \x01(\tH\x02R\brealFrom\x88\x01\x01\x12\x17\n" +
+	"\x04name\x18\x04 \x01(\tH\x03R\x04name\x88\x01\x01\x12)\n" +
+	"\rpurchasePrice\x18\x05 \x01(\x01H\x04R\rpurchasePrice\x88\x01\x01B\t\n" +
+	"\a_amountB\a\n" +
+	"\x05_fromB\v\n" +
+	"\t_realFromB\a\n" +
+	"\x05_nameB\x10\n" +
+	"\x0e_purchasePrice\"s\n" +
+	"\x05Offer\x12\x1b\n" +
+	"\x06amount\x18\x01 \x01(\x01H\x00R\x06amount\x88\x01\x01\x12\x17\n" +
+	"\x04code\x18\x02 \x01(\tH\x01R\x04code\x88\x01\x01\x12\x17\n" +
+	"\x04name\x18\x03 \x01(\tH\x02R\x04name\x88\x01\x01B\t\n" +
+	"\a_amountB\a\n" +
+	"\x05_codeB\a\n" +
+	"\x05_name\"w\n" +
+	"\tPromotion\x12\x1b\n" +
+	"\x06remark\x18\x01 \x01(\tH\x00R\x06remark\x88\x01\x01\x12\x17\n" +
+	"\x04name\x18\x02 \x01(\tH\x01R\x04name\x88\x01\x01\x12\x17\n" +
+	"\x04code\x18\x03 \x01(\tH\x02R\x04code\x88\x01\x01B\t\n" +
+	"\a_remarkB\a\n" +
+	"\x05_nameB\a\n" +
+	"\x05_code\"\xb2\x01\n" +
+	"\n" +
+	"Supplement\x12\x17\n" +
+	"\x04name\x18\x01 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1b\n" +
+	"\x06amount\x18\x02 \x01(\x01H\x01R\x06amount\x88\x01\x01\x12\x1f\n" +
+	"\bcurrency\x18\x03 \x01(\tH\x02R\bcurrency\x88\x01\x01\x12\x1f\n" +
+	"\bincluded\x18\x04 \x01(\bH\x03R\bincluded\x88\x01\x01B\a\n" +
+	"\x05_nameB\t\n" +
+	"\a_amountB\v\n" +
+	"\t_currencyB\v\n" +
+	"\t_included\"\xcd\x01\n" +
+	"\x03Tax\x12\x17\n" +
+	"\x04name\x18\x01 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1b\n" +
+	"\x06amount\x18\x02 \x01(\x01H\x01R\x06amount\x88\x01\x01\x12\x1f\n" +
+	"\bcurrency\x18\x03 \x01(\tH\x02R\bcurrency\x88\x01\x01\x12\x1f\n" +
+	"\bincluded\x18\x04 \x01(\bH\x03R\bincluded\x88\x01\x01\x12\x17\n" +
+	"\x04type\x18\x05 \x01(\tH\x04R\x04type\x88\x01\x01B\a\n" +
+	"\x05_nameB\t\n" +
+	"\a_amountB\v\n" +
+	"\t_currencyB\v\n" +
+	"\t_includedB\a\n" +
+	"\x05_type\"D\n" +
+	"\fNeighborhood\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\"N\n" +
+	"\x06Review\x12\x14\n" +
+	"\x05score\x18\x01 \x01(\x01R\x05score\x12\x14\n" +
+	"\x05count\x18\x02 \x01(\x05R\x05count\x12\x18\n" +
+	"\aaverage\x18\x03 \x01(\x01R\aaverage\"\xfd\x01\n" +
+	"\vHotelReview\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06rating\x18\x02 \x01(\x02R\x06rating\x12\x18\n" +
+	"\acomment\x18\x03 \x01(\tR\acomment\x12\x16\n" +
+	"\x06author\x18\x04 \x01(\tR\x06author\x12\x12\n" +
+	"\x04date\x18\x05 \x01(\tR\x04date\x12A\n" +
+	"\n" +
+	"subratings\x18\x06 \x03(\v2!.data.HotelReview.SubratingsEntryR\n" +
+	"subratings\x1a=\n" +
+	"\x0fSubratingsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x02R\x05value:\x028\x01\"\xb8\x01\n" +
 	"\bMetadata\x12 \n" +
-	"\vgeneratedAt\x18\x01 \x01(\tR\vgeneratedAt\x12\"\n" +
-	"\ftargetSizeMB\x18\x02 \x01(\x01R\ftargetSizeMB\x12&\n" +
-	"\x0eestimatedItems\x18\x03 \x01(\x05R\x0eestimatedItems\x12\"\n" +
-	"\factualSizeMB\x18\x04 \x01(\x01R\factualSizeMB\x12 \n" +
-	"\vactualItems\x18\x05 \x01(\x05R\vactualItems\"\xb3\x01\n" +
-	"\tUserChunk\x12 \n" +
-	"\x05users\x18\x01 \x03(\v2\n" +
-	".data.UserR\x05users\x12\x1e\n" +
+	"\vgeneratedAt\x18\x01 \x01(\tR\vgeneratedAt\x12 \n" +
+	"\vtotalHotels\x18\x02 \x01(\x05R\vtotalHotels\x12 \n" +
+	"\vgeneratedBy\x18\x03 \x01(\tR\vgeneratedBy\x12\"\n" +
+	"\factualSizeMB\x18\x04 \x01(\x01R\factualSizeMB\x12\"\n" +
+	"\factualHotels\x18\x05 \x01(\x05R\factualHotels\"\xb7\x01\n" +
+	"\n" +
+	"HotelChunk\x12#\n" +
+	"\x06hotels\x18\x01 \x03(\v2\v.data.HotelR\x06hotels\x12\x1e\n" +
 	"\n" +
 	"chunkIndex\x18\x02 \x01(\x05R\n" +
 	"chunkIndex\x12 \n" +
 	"\vtotalChunks\x18\x03 \x01(\x05R\vtotalChunks\x12\x16\n" +
 	"\x06isLast\x18\x04 \x01(\bR\x06isLast\x12*\n" +
-	"\bmetadata\x18\x05 \x01(\v2\x0e.data.MetadataR\bmetadata\"]\n" +
-	"\rUsersResponse\x12*\n" +
-	"\bmetadata\x18\x01 \x01(\v2\x0e.data.MetadataR\bmetadata\x12 \n" +
-	"\x05users\x18\x02 \x03(\v2\n" +
-	".data.UserR\x05users2x\n" +
-	"\vDataService\x12,\n" +
-	"\bGetUsers\x12\v.data.Empty\x1a\x13.data.UsersResponse\x12;\n" +
-	"\x11GetUsersStreaming\x12\x13.data.StreamRequest\x1a\x0f.data.UserChunk0\x01B\tZ\a./protob\x06proto3"
+	"\bmetadata\x18\x05 \x01(\v2\x0e.data.MetadataR\bmetadata\"a\n" +
+	"\x0eHotelsResponse\x12*\n" +
+	"\bmetadata\x18\x01 \x01(\v2\x0e.data.MetadataR\bmetadata\x12#\n" +
+	"\x06hotels\x18\x02 \x03(\v2\v.data.HotelR\x06hotels2|\n" +
+	"\vDataService\x12.\n" +
+	"\tGetHotels\x12\v.data.Empty\x1a\x14.data.HotelsResponse\x12=\n" +
+	"\x12GetHotelsStreaming\x12\x13.data.StreamRequest\x1a\x10.data.HotelChunk0\x01B\tZ\a./protob\x06proto3"
 
 var (
 	file_data_proto_rawDescOnce sync.Once
@@ -446,29 +1866,58 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_data_proto_goTypes = []any{
-	(*Empty)(nil),         // 0: data.Empty
-	(*StreamRequest)(nil), // 1: data.StreamRequest
-	(*User)(nil),          // 2: data.User
-	(*Metadata)(nil),      // 3: data.Metadata
-	(*UserChunk)(nil),     // 4: data.UserChunk
-	(*UsersResponse)(nil), // 5: data.UsersResponse
+	(*Empty)(nil),              // 0: data.Empty
+	(*StreamRequest)(nil),      // 1: data.StreamRequest
+	(*Hotel)(nil),              // 2: data.Hotel
+	(*Room)(nil),               // 3: data.Room
+	(*Rate)(nil),               // 4: data.Rate
+	(*CancellationPolicy)(nil), // 5: data.CancellationPolicy
+	(*Offer)(nil),              // 6: data.Offer
+	(*Promotion)(nil),          // 7: data.Promotion
+	(*Supplement)(nil),         // 8: data.Supplement
+	(*Tax)(nil),                // 9: data.Tax
+	(*Neighborhood)(nil),       // 10: data.Neighborhood
+	(*Review)(nil),             // 11: data.Review
+	(*HotelReview)(nil),        // 12: data.HotelReview
+	(*Metadata)(nil),           // 13: data.Metadata
+	(*HotelChunk)(nil),         // 14: data.HotelChunk
+	(*HotelsResponse)(nil),     // 15: data.HotelsResponse
+	nil,                        // 16: data.Hotel.DistancesEntry
+	nil,                        // 17: data.Hotel.StrengthEntry
+	nil,                        // 18: data.Hotel.ReviewsSubratingsAverageEntry
+	nil,                        // 19: data.HotelReview.SubratingsEntry
 }
 var file_data_proto_depIdxs = []int32{
-	2, // 0: data.UserChunk.users:type_name -> data.User
-	3, // 1: data.UserChunk.metadata:type_name -> data.Metadata
-	3, // 2: data.UsersResponse.metadata:type_name -> data.Metadata
-	2, // 3: data.UsersResponse.users:type_name -> data.User
-	0, // 4: data.DataService.GetUsers:input_type -> data.Empty
-	1, // 5: data.DataService.GetUsersStreaming:input_type -> data.StreamRequest
-	5, // 6: data.DataService.GetUsers:output_type -> data.UsersResponse
-	4, // 7: data.DataService.GetUsersStreaming:output_type -> data.UserChunk
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	3,  // 0: data.Hotel.rooms:type_name -> data.Room
+	8,  // 1: data.Hotel.supplements:type_name -> data.Supplement
+	16, // 2: data.Hotel.distances:type_name -> data.Hotel.DistancesEntry
+	10, // 3: data.Hotel.neighborhood:type_name -> data.Neighborhood
+	17, // 4: data.Hotel.strength:type_name -> data.Hotel.StrengthEntry
+	11, // 5: data.Hotel.review:type_name -> data.Review
+	18, // 6: data.Hotel.reviewsSubratingsAverage:type_name -> data.Hotel.ReviewsSubratingsAverageEntry
+	12, // 7: data.Hotel.reviews:type_name -> data.HotelReview
+	4,  // 8: data.Room.rates:type_name -> data.Rate
+	5,  // 9: data.Rate.cancellationPolicies:type_name -> data.CancellationPolicy
+	6,  // 10: data.Rate.offers:type_name -> data.Offer
+	7,  // 11: data.Rate.promotions:type_name -> data.Promotion
+	8,  // 12: data.Rate.supplements:type_name -> data.Supplement
+	9,  // 13: data.Rate.taxes:type_name -> data.Tax
+	19, // 14: data.HotelReview.subratings:type_name -> data.HotelReview.SubratingsEntry
+	2,  // 15: data.HotelChunk.hotels:type_name -> data.Hotel
+	13, // 16: data.HotelChunk.metadata:type_name -> data.Metadata
+	13, // 17: data.HotelsResponse.metadata:type_name -> data.Metadata
+	2,  // 18: data.HotelsResponse.hotels:type_name -> data.Hotel
+	0,  // 19: data.DataService.GetHotels:input_type -> data.Empty
+	1,  // 20: data.DataService.GetHotelsStreaming:input_type -> data.StreamRequest
+	15, // 21: data.DataService.GetHotels:output_type -> data.HotelsResponse
+	14, // 22: data.DataService.GetHotelsStreaming:output_type -> data.HotelChunk
+	21, // [21:23] is the sub-list for method output_type
+	19, // [19:21] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_data_proto_init() }
@@ -476,13 +1925,21 @@ func file_data_proto_init() {
 	if File_data_proto != nil {
 		return
 	}
+	file_data_proto_msgTypes[2].OneofWrappers = []any{}
+	file_data_proto_msgTypes[3].OneofWrappers = []any{}
+	file_data_proto_msgTypes[4].OneofWrappers = []any{}
+	file_data_proto_msgTypes[5].OneofWrappers = []any{}
+	file_data_proto_msgTypes[6].OneofWrappers = []any{}
+	file_data_proto_msgTypes[7].OneofWrappers = []any{}
+	file_data_proto_msgTypes[8].OneofWrappers = []any{}
+	file_data_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_data_proto_rawDesc), len(file_data_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 
-// Gateway endpoint - calls microservice and processes data
+// Gateway endpoint - calls microservice and processes hotel data
 app.get('/stats', async (req, res) => {
     const startTime = Date.now();
 
@@ -12,18 +12,18 @@ app.get('/stats', async (req, res) => {
         const response = await fetch('http://localhost:3001/data');
         const data = await response.json();
 
-        // Simple logic: count users and calculate stats
-        const userCount = data.users ? data.users.length : 0;
-        const activeUsers = data.users ? data.users.filter(user => user.active).length : 0;
+        // Count hotels and calculate stats
+        const hotelCount = data.hotels ? data.hotels.length : 0;
+        const availableHotels = data.hotels ? data.hotels.filter(hotel => hotel.available).length : 0;
 
         const processTime = Date.now() - startTime;
 
         // Return processed stats only
         res.json({
             processTimeMs: processTime,
-            totalUsers: userCount,
-            activeUsers: activeUsers,
-            inactiveUsers: userCount - activeUsers,
+            totalHotels: hotelCount,
+            availableHotels: availableHotels,
+            dataSize: data.metadata ? data.metadata.actualSizeMB : 0,
         });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch data from microservice' });
@@ -31,6 +31,6 @@ app.get('/stats', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Gateway running on port ${PORT}`);
+    console.log(`Hotel Gateway running on port ${PORT}`);
     console.log(`Try: http://localhost:${PORT}/stats`);
 });

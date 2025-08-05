@@ -10,7 +10,6 @@
             "env": {
                 "NODE_ENV": "development"
             },
-            "console": "integratedTerminal",
             "restart": true,
             "runtimeExecutable": "node",
             "skipFiles": [
@@ -26,7 +25,6 @@
             "env": {
                 "NODE_ENV": "development"
             },
-            "console": "integratedTerminal",
             "restart": true,
             "runtimeExecutable": "node",
             "skipFiles": [
@@ -41,7 +39,6 @@
             "program": "${workspaceFolder}/go/cmd/microservice",
             "cwd": "${workspaceFolder}",
             "env": {},
-            "console": "integratedTerminal",
             "args": [],
             "showLog": true
         },
@@ -53,7 +50,6 @@
             "program": "${workspaceFolder}/go/cmd/gateway",
             "cwd": "${workspaceFolder}",
             "env": {},
-            "console": "integratedTerminal",
             "args": [],
             "showLog": true
         }
@@ -83,6 +79,21 @@
                 "hidden": false,
                 "group": "golang",
                 "order": 2
+            }
+        },
+        {
+            "name": "Performance Test Setup",
+            "configurations": [
+                "Node.js Microservice",
+                "Node.js Gateway",
+                "Go Microservice",
+                "Go Gateway"
+            ],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "testing",
+                "order": 3
             }
         }
     ]

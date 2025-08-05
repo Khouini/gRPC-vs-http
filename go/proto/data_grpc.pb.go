@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DataService_GetUsers_FullMethodName          = "/data.DataService/GetUsers"
-	DataService_GetUsersStreaming_FullMethodName = "/data.DataService/GetUsersStreaming"
+	DataService_GetHotels_FullMethodName          = "/data.DataService/GetHotels"
+	DataService_GetHotelsStreaming_FullMethodName = "/data.DataService/GetHotelsStreaming"
 )
 
 // DataServiceClient is the client API for DataService service.
@@ -29,8 +29,8 @@ const (
 //
 // Data service definition with streaming support
 type DataServiceClient interface {
-	GetUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UsersResponse, error)
-	GetUsersStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[UserChunk], error)
+	GetHotels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HotelsResponse, error)
+	GetHotelsStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotelChunk], error)
 }
 
 type dataServiceClient struct {
@@ -41,23 +41,23 @@ func NewDataServiceClient(cc grpc.ClientConnInterface) DataServiceClient {
 	return &dataServiceClient{cc}
 }
 
-func (c *dataServiceClient) GetUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UsersResponse, error) {
+func (c *dataServiceClient) GetHotels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HotelsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UsersResponse)
-	err := c.cc.Invoke(ctx, DataService_GetUsers_FullMethodName, in, out, cOpts...)
+	out := new(HotelsResponse)
+	err := c.cc.Invoke(ctx, DataService_GetHotels_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dataServiceClient) GetUsersStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[UserChunk], error) {
+func (c *dataServiceClient) GetHotelsStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotelChunk], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &DataService_ServiceDesc.Streams[0], DataService_GetUsersStreaming_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &DataService_ServiceDesc.Streams[0], DataService_GetHotelsStreaming_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[StreamRequest, UserChunk]{ClientStream: stream}
+	x := &grpc.GenericClientStream[StreamRequest, HotelChunk]{ClientStream: stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *dataServiceClient) GetUsersStreaming(ctx context.Context, in *StreamReq
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type DataService_GetUsersStreamingClient = grpc.ServerStreamingClient[UserChunk]
+type DataService_GetHotelsStreamingClient = grpc.ServerStreamingClient[HotelChunk]
 
 // DataServiceServer is the server API for DataService service.
 // All implementations must embed UnimplementedDataServiceServer
@@ -76,8 +76,8 @@ type DataService_GetUsersStreamingClient = grpc.ServerStreamingClient[UserChunk]
 //
 // Data service definition with streaming support
 type DataServiceServer interface {
-	GetUsers(context.Context, *Empty) (*UsersResponse, error)
-	GetUsersStreaming(*StreamRequest, grpc.ServerStreamingServer[UserChunk]) error
+	GetHotels(context.Context, *Empty) (*HotelsResponse, error)
+	GetHotelsStreaming(*StreamRequest, grpc.ServerStreamingServer[HotelChunk]) error
 	mustEmbedUnimplementedDataServiceServer()
 }
 
@@ -88,11 +88,11 @@ type DataServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDataServiceServer struct{}
 
-func (UnimplementedDataServiceServer) GetUsers(context.Context, *Empty) (*UsersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUsers not implemented")
+func (UnimplementedDataServiceServer) GetHotels(context.Context, *Empty) (*HotelsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHotels not implemented")
 }
-func (UnimplementedDataServiceServer) GetUsersStreaming(*StreamRequest, grpc.ServerStreamingServer[UserChunk]) error {
-	return status.Errorf(codes.Unimplemented, "method GetUsersStreaming not implemented")
+func (UnimplementedDataServiceServer) GetHotelsStreaming(*StreamRequest, grpc.ServerStreamingServer[HotelChunk]) error {
+	return status.Errorf(codes.Unimplemented, "method GetHotelsStreaming not implemented")
 }
 func (UnimplementedDataServiceServer) mustEmbedUnimplementedDataServiceServer() {}
 func (UnimplementedDataServiceServer) testEmbeddedByValue()                     {}
@@ -115,34 +115,34 @@ func RegisterDataServiceServer(s grpc.ServiceRegistrar, srv DataServiceServer) {
 	s.RegisterService(&DataService_ServiceDesc, srv)
 }
 
-func _DataService_GetUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _DataService_GetHotels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DataServiceServer).GetUsers(ctx, in)
+		return srv.(DataServiceServer).GetHotels(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DataService_GetUsers_FullMethodName,
+		FullMethod: DataService_GetHotels_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataServiceServer).GetUsers(ctx, req.(*Empty))
+		return srv.(DataServiceServer).GetHotels(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DataService_GetUsersStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _DataService_GetHotelsStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(StreamRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(DataServiceServer).GetUsersStreaming(m, &grpc.GenericServerStream[StreamRequest, UserChunk]{ServerStream: stream})
+	return srv.(DataServiceServer).GetHotelsStreaming(m, &grpc.GenericServerStream[StreamRequest, HotelChunk]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type DataService_GetUsersStreamingServer = grpc.ServerStreamingServer[UserChunk]
+type DataService_GetHotelsStreamingServer = grpc.ServerStreamingServer[HotelChunk]
 
 // DataService_ServiceDesc is the grpc.ServiceDesc for DataService service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -152,14 +152,14 @@ var DataService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DataServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetUsers",
-			Handler:    _DataService_GetUsers_Handler,
+			MethodName: "GetHotels",
+			Handler:    _DataService_GetHotels_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "GetUsersStreaming",
-			Handler:       _DataService_GetUsersStreaming_Handler,
+			StreamName:    "GetHotelsStreaming",
+			Handler:       _DataService_GetHotelsStreaming_Handler,
 			ServerStreams: true,
 		},
 	},

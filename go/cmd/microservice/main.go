@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -20,7 +20,7 @@ import (
 type Server struct {
 	pb.UnimplementedDataServiceServer
 	data       *types.DataFile
-	pbUsers    []*pb.User   // Pre-converted protobuf users
+	pbHotels   []*pb.Hotel  // Pre-converted protobuf hotels
 	pbMetadata *pb.Metadata // Pre-converted protobuf metadata
 }
 
@@ -29,32 +29,25 @@ func NewServer() *Server {
 	data := loadData()
 
 	// Pre-convert data to protobuf format once at startup
-	pbUsers := make([]*pb.User, len(data.Users))
+	pbHotels := make([]*pb.Hotel, len(data.Hotels))
 
-	for i, user := range data.Users {
-		pbUsers[i] = &pb.User{
-			Id:     int32(user.ID),
-			Name:   user.Name,
-			Email:  user.Email,
-			Age:    int32(user.Age),
-			City:   user.City,
-			Active: user.Active,
-		}
+	for i, hotel := range data.Hotels {
+		pbHotels[i] = convertHotelToProto(hotel)
 	}
 
 	pbMetadata := &pb.Metadata{
-		GeneratedAt:    data.Metadata.GeneratedAt,
-		TargetSizeMB:   data.Metadata.TargetSizeMB,
-		EstimatedItems: int32(data.Metadata.EstimatedItems),
-		ActualSizeMB:   data.Metadata.ActualSizeMB,
-		ActualItems:    int32(data.Metadata.ActualItems),
+		GeneratedAt:  data.Metadata.GeneratedAt,
+		TotalHotels:  int32(data.Metadata.TotalHotels),
+		GeneratedBy:  data.Metadata.GeneratedBy,
+		ActualSizeMB: data.Metadata.ActualSizeMB,
+		ActualHotels: int32(data.Metadata.ActualHotels),
 	}
 
-	log.Printf("Pre-converted %d users to protobuf format", len(pbUsers))
+	log.Printf("Pre-converted %d hotels to protobuf format", len(pbHotels))
 
 	return &Server{
 		data:       data,
-		pbUsers:    pbUsers,
+		pbHotels:   pbHotels,
 		pbMetadata: pbMetadata,
 	}
 }
@@ -75,7 +68,7 @@ func loadData() *types.DataFile {
 
 	for _, path := range possiblePaths {
 		dataPath = filepath.Join(path)
-		file, err = ioutil.ReadFile(dataPath)
+		file, err = os.ReadFile(dataPath)
 		if err == nil {
 			log.Printf("Found data file at: %s", dataPath)
 			break
@@ -91,40 +84,176 @@ func loadData() *types.DataFile {
 		log.Fatalf("Failed to parse JSON: %v", err)
 	}
 
-	log.Printf("Loaded %d users from data file", len(data.Users))
+	log.Printf("Loaded %d hotels from data file", len(data.Hotels))
 	return &data
 }
 
-// GetUsers implements the gRPC method (original non-streaming)
-func (s *Server) GetUsers(ctx context.Context, req *pb.Empty) (*pb.UsersResponse, error) {
+// convertHotelToProto converts a types.Hotel to pb.Hotel
+func convertHotelToProto(hotel types.Hotel) *pb.Hotel {
+	pbHotel := &pb.Hotel{
+		ZoneId: hotel.ZoneId,
+		Zone:   hotel.Zone,
+	}
+
+	// Handle optional fields
+	if hotel.SupplierId != nil {
+		pbHotel.SupplierId = hotel.SupplierId
+	}
+	if hotel.SupplierIds != nil {
+		pbHotel.SupplierIds = hotel.SupplierIds
+	}
+	if hotel.HotelId != nil {
+		pbHotel.HotelId = hotel.HotelId
+	}
+	if hotel.HotelIds != nil {
+		pbHotel.HotelIds = hotel.HotelIds
+	}
+	if hotel.GiataId != nil {
+		pbHotel.GiataId = hotel.GiataId
+	}
+	if hotel.HUid != nil {
+		pbHotel.HUid = hotel.HUid
+	}
+	if hotel.Name != nil {
+		pbHotel.Name = hotel.Name
+	}
+	if hotel.Rating != nil {
+		pbHotel.Rating = hotel.Rating
+	}
+	if hotel.Address != nil {
+		pbHotel.Address = hotel.Address
+	}
+	if hotel.Score != nil {
+		pbHotel.Score = hotel.Score
+	}
+	if hotel.HotelChainId != nil {
+		pbHotel.HotelChainId = hotel.HotelChainId
+	}
+	if hotel.AccTypeId != nil {
+		pbHotel.AccTypeId = hotel.AccTypeId
+	}
+	if hotel.City != nil {
+		pbHotel.City = hotel.City
+	}
+	if hotel.CityId != nil {
+		pbHotel.CityId = hotel.CityId
+	}
+	if hotel.Country != nil {
+		pbHotel.Country = hotel.Country
+	}
+	if hotel.CountryCode != nil {
+		pbHotel.CountryCode = hotel.CountryCode
+	}
+	if hotel.CountryId != nil {
+		pbHotel.CountryId = hotel.CountryId
+	}
+	if hotel.Lat != nil {
+		pbHotel.Lat = hotel.Lat
+	}
+	if hotel.Long != nil {
+		pbHotel.Long = hotel.Long
+	}
+	if hotel.MarketingText != nil {
+		pbHotel.MarketingText = hotel.MarketingText
+	}
+	if hotel.MinRate != nil {
+		pbHotel.MinRate = hotel.MinRate
+	}
+	if hotel.MaxRate != nil {
+		pbHotel.MaxRate = hotel.MaxRate
+	}
+	if hotel.Currency != nil {
+		pbHotel.Currency = hotel.Currency
+	}
+	if hotel.Photos != nil {
+		pbHotel.Photos = hotel.Photos
+	}
+	if hotel.Total != nil {
+		pbHotel.Total = hotel.Total
+	}
+	if hotel.Distances != nil {
+		pbHotel.Distances = hotel.Distances
+	}
+	if hotel.Strength != nil {
+		pbHotel.Strength = hotel.Strength
+	}
+	if hotel.Available != nil {
+		pbHotel.Available = hotel.Available
+	}
+	if hotel.Boards != nil {
+		pbHotel.Boards = hotel.Boards
+	}
+	if hotel.Tag != nil {
+		pbHotel.Tag = hotel.Tag
+	}
+	if hotel.CityLat != nil {
+		pbHotel.CityLat = hotel.CityLat
+	}
+	if hotel.CityLong != nil {
+		pbHotel.CityLong = hotel.CityLong
+	}
+	if hotel.ReviewsSubratingsAverage != nil {
+		pbHotel.ReviewsSubratingsAverage = hotel.ReviewsSubratingsAverage
+	}
+	if hotel.AllNRF != nil {
+		pbHotel.AllNRF = hotel.AllNRF
+	}
+	if hotel.AllRF != nil {
+		pbHotel.AllRF = hotel.AllRF
+	}
+	if hotel.PartialNRF != nil {
+		pbHotel.PartialNRF = hotel.PartialNRF
+	}
+
+	// Convert complex nested structures (simplified for now)
+	if hotel.Neighborhood != nil {
+		pbHotel.Neighborhood = &pb.Neighborhood{
+			Name:        hotel.Neighborhood.Name,
+			Description: hotel.Neighborhood.Description,
+		}
+	}
+
+	if hotel.Review != nil {
+		pbHotel.Review = &pb.Review{
+			Score:   hotel.Review.Score,
+			Count:   hotel.Review.Count,
+			Average: hotel.Review.Average,
+		}
+	}
+
+	return pbHotel
+}
+
+// GetHotels implements the gRPC method (original non-streaming)
+func (s *Server) GetHotels(ctx context.Context, req *pb.Empty) (*pb.HotelsResponse, error) {
 	// Return pre-converted data - no conversion overhead!
-	return &pb.UsersResponse{
+	return &pb.HotelsResponse{
 		Metadata: s.pbMetadata,
-		Users:    s.pbUsers,
+		Hotels:   s.pbHotels,
 	}, nil
 }
 
-// GetUsersStreaming implements streaming method with chunked data
-func (s *Server) GetUsersStreaming(req *pb.StreamRequest, stream pb.DataService_GetUsersStreamingServer) error {
+// GetHotelsStreaming implements streaming method with chunked data
+func (s *Server) GetHotelsStreaming(req *pb.StreamRequest, stream pb.DataService_GetHotelsStreamingServer) error {
 	chunkSize := int(req.ChunkSize)
 	if chunkSize <= 0 {
-		chunkSize = 1000 // Default chunk size
+		chunkSize = 100 // Default chunk size for hotels
 	}
 
-	totalUsers := len(s.pbUsers)
-	totalChunks := (totalUsers + chunkSize - 1) / chunkSize // Ceiling division
+	totalHotels := len(s.pbHotels)
+	totalChunks := (totalHotels + chunkSize - 1) / chunkSize // Ceiling division
 
-	log.Printf("Streaming %d users in %d chunks of size %d", totalUsers, totalChunks, chunkSize)
+	log.Printf("Streaming %d hotels in %d chunks of size %d", totalHotels, totalChunks, chunkSize)
 
 	for i := 0; i < totalChunks; i++ {
 		start := i * chunkSize
 		end := start + chunkSize
-		if end > totalUsers {
-			end = totalUsers
+		if end > totalHotels {
+			end = totalHotels
 		}
 
-		chunk := &pb.UserChunk{
-			Users:       s.pbUsers[start:end],
+		chunk := &pb.HotelChunk{
+			Hotels:      s.pbHotels[start:end],
 			ChunkIndex:  int32(i),
 			TotalChunks: int32(totalChunks),
 			IsLast:      i == totalChunks-1,
@@ -140,9 +269,6 @@ func (s *Server) GetUsersStreaming(req *pb.StreamRequest, stream pb.DataService_
 			log.Printf("Error sending chunk %d: %v", i, err)
 			return err
 		}
-
-		// Small delay to demonstrate streaming (remove in production)
-		// time.Sleep(10 * time.Millisecond)
 	}
 
 	log.Printf("Completed streaming %d chunks", totalChunks)

@@ -35,31 +35,30 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	resp, err := g.client.GetUsers(ctx, &pb.Empty{})
+	resp, err := g.client.GetHotels(ctx, &pb.Empty{})
 	if err != nil {
 		log.Printf("gRPC call failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from microservice"})
 		return
 	}
 
-	// Optimized counting using simple loop
-	totalUsers := len(resp.Users)
-	activeUsers := 0
+	// Count available hotels
+	totalHotels := len(resp.Hotels)
+	availableHotels := 0
 
-	for _, user := range resp.Users {
-		if user.Active {
-			activeUsers++
+	for _, hotel := range resp.Hotels {
+		if hotel.Available != nil && *hotel.Available {
+			availableHotels++
 		}
 	}
 
 	processTime := time.Since(startTime).Milliseconds()
 
 	stats := types.StatsResponse{
-		TotalUsers:    totalUsers,
-		ActiveUsers:   activeUsers,
-		InactiveUsers: totalUsers - activeUsers,
-		DataSize:      resp.Metadata.ActualSizeMB,
-		ProcessTimeMs: processTime,
+		TotalHotels:     totalHotels,
+		AvailableHotels: availableHotels,
+		DataSize:        resp.Metadata.ActualSizeMB,
+		ProcessTimeMs:   processTime,
 	}
 
 	c.JSON(http.StatusOK, stats)
@@ -69,18 +68,18 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 func (g *GatewayServer) handleStatsStreaming(c *gin.Context) {
 	startTime := time.Now()
 
-	// Get chunk size from query parameter (default: 1000)
-	chunkSizeStr := c.DefaultQuery("chunkSize", "1000")
+	// Get chunk size from query parameter (default: 100)
+	chunkSizeStr := c.DefaultQuery("chunkSize", "100")
 	chunkSize, err := strconv.Atoi(chunkSizeStr)
 	if err != nil || chunkSize <= 0 {
-		chunkSize = 1000
+		chunkSize = 100
 	}
 
 	// Call streaming gRPC method
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	stream, err := g.client.GetUsersStreaming(ctx, &pb.StreamRequest{
+	stream, err := g.client.GetHotelsStreaming(ctx, &pb.StreamRequest{
 		ChunkSize: int32(chunkSize),
 	})
 	if err != nil {
@@ -90,8 +89,8 @@ func (g *GatewayServer) handleStatsStreaming(c *gin.Context) {
 	}
 
 	// Process streaming chunks
-	totalUsers := 0
-	activeUsers := 0
+	totalHotels := 0
+	availableHotels := 0
 	chunksReceived := 0
 	var metadata *pb.Metadata
 
@@ -108,11 +107,11 @@ func (g *GatewayServer) handleStatsStreaming(c *gin.Context) {
 
 		// Process chunk
 		chunksReceived++
-		totalUsers += len(chunk.Users)
+		totalHotels += len(chunk.Hotels)
 
-		for _, user := range chunk.Users {
-			if user.Active {
-				activeUsers++
+		for _, hotel := range chunk.Hotels {
+			if hotel.Available != nil && *hotel.Available {
+				availableHotels++
 			}
 		}
 
@@ -121,17 +120,16 @@ func (g *GatewayServer) handleStatsStreaming(c *gin.Context) {
 			metadata = chunk.Metadata
 		}
 
-		log.Printf("Processed chunk %d/%d with %d users", chunk.ChunkIndex+1, chunk.TotalChunks, len(chunk.Users))
+		log.Printf("Processed chunk %d/%d with %d hotels", chunk.ChunkIndex+1, chunk.TotalChunks, len(chunk.Hotels))
 	}
 
 	processTime := time.Since(startTime).Milliseconds()
 
 	stats := types.StatsResponse{
-		TotalUsers:    totalUsers,
-		ActiveUsers:   activeUsers,
-		InactiveUsers: totalUsers - activeUsers,
-		DataSize:      metadata.ActualSizeMB,
-		ProcessTimeMs: processTime,
+		TotalHotels:     totalHotels,
+		AvailableHotels: availableHotels,
+		DataSize:        metadata.ActualSizeMB,
+		ProcessTimeMs:   processTime,
 	}
 
 	// Add streaming info
@@ -195,7 +193,7 @@ func main() {
 	log.Println("Gateway running on port 8080 with streaming support")
 	log.Println("Endpoints:")
 	log.Println("  - GET /stats (original)")
-	log.Println("  - GET /stats-streaming?chunkSize=1000 (chunked streaming)")
+	log.Println("  - GET /stats-streaming?chunkSize=100 (chunked streaming)")
 	log.Println("  - GET /health (health check)")
 
 	if err := router.Run(":8080"); err != nil {

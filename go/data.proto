@@ -6,8 +6,8 @@ option go_package = "./proto";
 
 // Data service definition with streaming support
 service DataService {
-  rpc GetUsers(Empty) returns (UsersResponse);
-  rpc GetUsersStreaming(StreamRequest) returns (stream UserChunk);
+  rpc GetHotels(Empty) returns (HotelsResponse);
+  rpc GetHotelsStreaming(StreamRequest) returns (stream HotelChunk);
 }
 
 // Empty request message
@@ -15,39 +15,172 @@ message Empty {}
 
 // Stream request with chunk size
 message StreamRequest {
-  int32 chunkSize = 1; // Number of users per chunk (default: 1000)
+  int32 chunkSize = 1; // Number of hotels per chunk (default: 100)
 }
 
-// User message matching the JSON structure
-message User {
-  int32 id = 1;
-  string name = 2;
-  string email = 3;
-  int32 age = 4;
-  string city = 5;
-  bool active = 6;
+// Hotel message matching the JSON structure
+message Hotel {
+  optional int32 supplierId = 1;
+  repeated int32 supplierIds = 2;
+  optional string hotelId = 3;
+  repeated string hotelIds = 4;
+  optional int32 giataId = 5;
+  optional int32 hUid = 6;
+  optional string name = 7;
+  optional float rating = 8;
+  optional string address = 9;
+  optional double score = 10;
+  optional int32 hotelChainId = 11;
+  optional int32 accTypeId = 12;
+  optional string city = 13;
+  optional int32 cityId = 14;
+  int32 zoneId = 15;
+  string zone = 16;
+  optional string country = 17;
+  optional string countryCode = 18;
+  optional int32 countryId = 19;
+  optional double lat = 20;
+  optional double long = 21;
+  optional string marketingText = 22;
+  optional double minRate = 23;
+  optional double maxRate = 24;
+  optional string currency = 25;
+  repeated string photos = 26;
+  repeated Room rooms = 27;
+  repeated Supplement supplements = 28;
+  optional float total = 29;
+  map<string, float> distances = 30;
+  optional Neighborhood neighborhood = 31;
+  map<string, bool> strength = 32;
+  optional Review review = 33;
+  optional bool available = 34;
+  repeated string boards = 37;
+  map<string, float> reviewsSubratingsAverage = 47;
+  optional string tag = 48;
+  optional double cityLat = 44;
+  optional double cityLong = 45;
+  repeated HotelReview reviews = 46;
+  optional bool allNRF = 41;
+  optional bool allRF = 42;
+  optional bool partialNRF = 43;
+}
+
+message Room {
+  optional string code = 1;
+  repeated string codes = 2;
+  optional string name = 3;
+  repeated string names = 4;
+  repeated Rate rates = 5;
+  optional string category = 6;
+  optional double total = 7;
+  optional string originalCode = 9;
+  optional string originalName = 10;
+}
+
+message Rate {
+  optional string rateKey = 1;
+  optional string rateClass = 2;
+  optional int32 contractId = 3;
+  optional string rateType = 4;
+  optional string paymentType = 5;
+  optional int32 allotment = 6;
+  optional string availability = 7;
+  optional double amount = 8;
+  optional string currency = 9;
+  optional string boardCode = 10;
+  optional string boardName = 11;
+  optional bool nrf = 12;
+  repeated CancellationPolicy cancellationPolicies = 13;
+  repeated Offer offers = 14;
+  repeated Promotion promotions = 15;
+  repeated Supplement supplements = 16;
+  repeated Tax taxes = 17;
+  optional int32 rooms = 18;
+  optional string adults = 19;
+  optional string children = 20;
+  optional string infant = 21;
+  optional string childrenAges = 22;
+  optional string rateComments = 23;
+  optional bool packaging = 24;
+  optional double total = 25;
+  optional double purchasePrice = 26;
+}
+
+message CancellationPolicy {
+  optional double amount = 1;
+  optional string from = 2;
+  optional string realFrom = 3;
+  optional string name = 4;
+  optional double purchasePrice = 5;
+}
+
+message Offer {
+  optional double amount = 1;
+  optional string code = 2;
+  optional string name = 3;
+}
+
+message Promotion {
+  optional string remark = 1;
+  optional string name = 2;
+  optional string code = 3;
+}
+
+message Supplement {
+  optional string name = 1;
+  optional double amount = 2;
+  optional string currency = 3;
+  optional bool included = 4;
+}
+
+message Tax {
+  optional string name = 1;
+  optional double amount = 2;
+  optional string currency = 3;
+  optional bool included = 4;
+  optional string type = 5;
+}
+
+message Neighborhood {
+  string name = 1;
+  string description = 2;
+}
+
+message Review {
+  double score = 1;
+  int32 count = 2;
+  double average = 3;
+}
+
+message HotelReview {
+  string id = 1;
+  float rating = 2;
+  string comment = 3;
+  string author = 4;
+  string date = 5;
+  map<string, float> subratings = 6;
 }
 
 // Metadata message
 message Metadata {
   string generatedAt = 1;
-  double targetSizeMB = 2;
-  int32 estimatedItems = 3;
+  int32 totalHotels = 2;
+  string generatedBy = 3;
   double actualSizeMB = 4;
-  int32 actualItems = 5;
+  int32 actualHotels = 5;
 }
 
-// Chunk of users for streaming
-message UserChunk {
-  repeated User users = 1;
+// Chunk of hotels for streaming
+message HotelChunk {
+  repeated Hotel hotels = 1;
   int32 chunkIndex = 2;
   int32 totalChunks = 3;
   bool isLast = 4;
   Metadata metadata = 5; // Only included in first chunk
 }
 
-// Response containing users and metadata
-message UsersResponse {
+// Response containing hotels and metadata
+message HotelsResponse {
   Metadata metadata = 1;
-  repeated User users = 2;
+  repeated Hotel hotels = 2;
 }
