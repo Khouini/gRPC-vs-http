@@ -17,10 +17,9 @@ import (
 
 // StatsResponse represents the response from the gateway
 type StatsResponse struct {
-	TotalHotels     int     `json:"totalHotels"`
-	AvailableHotels int     `json:"availableHotels"`
-	DataSize        float64 `json:"dataSize"`
-	ProcessTimeMs   int64   `json:"processTimeMs"`
+	ProcessTimeMs   int64 `json:"processTimeMs"`
+	TotalHotels     int   `json:"totalHotels"`
+	AvailableHotels int   `json:"availableHotels"`
 }
 
 // GatewayServer handles HTTP requests and calls gRPC microservice
@@ -60,7 +59,6 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 
 	var totalHotels int
 	var availableHotels int
-	var metadata *pb.Metadata
 
 	// Receive all chunks and process them
 	for {
@@ -74,11 +72,6 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 			return
 		}
 
-		// Get metadata from first chunk
-		if chunk.Metadata != nil {
-			metadata = chunk.Metadata
-		}
-
 		// Count hotels in this chunk
 		totalHotels += len(chunk.Hotels)
 		for _, hotel := range chunk.Hotels {
@@ -90,16 +83,10 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 
 	processTime := time.Since(startTime).Milliseconds()
 
-	var dataSize float64
-	if metadata != nil {
-		dataSize = metadata.ActualSizeMB
-	}
-
 	stats := StatsResponse{
+		ProcessTimeMs:   processTime,
 		TotalHotels:     totalHotels,
 		AvailableHotels: availableHotels,
-		DataSize:        dataSize,
-		ProcessTimeMs:   processTime,
 	}
 
 	c.JSON(http.StatusOK, stats)
