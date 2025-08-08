@@ -133,6 +133,8 @@ func main() {
 	}
 
 	// Optimized server options
+	// Note: gzip compression is automatically supported on server side
+	// when the encoding/gzip package is imported
 	kaep := keepalive.EnforcementPolicy{
 		MinTime:             5 * time.Second,
 		PermitWithoutStream: true,
@@ -157,6 +159,7 @@ func main() {
 	pb.RegisterDataServiceServer(s, server)
 
 	log.Println("gRPC microservice running on port 50051 with optimizations")
+	log.Println("Compression: gzip enabled (automatic server-side support)")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}

@@ -120,10 +120,10 @@ func main() {
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithKeepaliveParams(kacp),
-		// grpc.WithDefaultCallOptions(
-		// 	grpc.MaxCallRecvMsgSize(1000*1024*1024), // 100MB
-		// 	grpc.MaxCallSendMsgSize(1000*1024*1024), // 100MB
-		// ),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(1000*1024*1024), // 100MB
+			grpc.MaxCallSendMsgSize(1000*1024*1024), // 100MB
+		),
 	}
 
 	conn, err := grpc.Dial("localhost:50051", opts...)
