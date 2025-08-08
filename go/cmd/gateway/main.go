@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	pb "grpc-vs-http/proto"
@@ -36,11 +37,21 @@ func NewGatewayServer(client pb.DataServiceClient) *GatewayServer {
 func (g *GatewayServer) handleStats(c *gin.Context) {
 	startTime := time.Now()
 
+	// Get chunk size from query parameter, default to 100
+	chunkSize := int32(100)
+	if chunkParam := c.Query("chunkSize"); chunkParam != "" {
+		if parsed, err := strconv.ParseInt(chunkParam, 10, 32); err == nil && parsed > 0 {
+			chunkSize = int32(parsed)
+		}
+	}
+
+	log.Printf("Processing stats with chunk size: %d", chunkSize)
+
 	// Call gRPC microservice using streaming
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	stream, err := g.client.GetHotelsStreaming(ctx, &pb.StreamRequest{ChunkSize: 500})
+	stream, err := g.client.GetHotelsStreaming(ctx, &pb.StreamRequest{ChunkSize: chunkSize})
 	if err != nil {
 		log.Printf("gRPC streaming call failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from microservice"})
@@ -140,7 +151,7 @@ func main() {
 
 	log.Println("Gateway running on port 8080")
 	log.Println("Endpoints:")
-	log.Println("  - GET /stats (hotel statistics)")
+	log.Println("  - GET /stats?chunkSize=<size> (hotel statistics with configurable chunk size, default: 100)")
 	log.Println("  - GET /health (health check)")
 
 	if err := router.Run(":8080"); err != nil {
