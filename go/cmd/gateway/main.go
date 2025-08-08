@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -64,7 +65,8 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 	for {
 		chunk, err := stream.Recv()
 		if err != nil {
-			if err.Error() == "EOF" {
+			// if err.Error() == "EOF" {
+			if err == io.EOF {
 				break
 			}
 			log.Printf("gRPC stream receive failed: %v", err)
@@ -110,18 +112,18 @@ func (g *GatewayServer) setupRoutes() *gin.Engine {
 func main() {
 	// Connect to gRPC microservice with optimized settings
 	kacp := keepalive.ClientParameters{
-		Time:                10 * time.Second, // Send keepalive pings every 10 seconds
-		Timeout:             time.Second,      // Wait 1 second for ping ack before considering the connection dead
-		PermitWithoutStream: true,             // Send pings even without active streams
+		Time:                2 * time.Minute,
+		Timeout:             20 * time.Second,
+		PermitWithoutStream: true,
 	}
 
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithKeepaliveParams(kacp),
-		grpc.WithDefaultCallOptions(
-			grpc.MaxCallRecvMsgSize(1000*1024*1024), // 100MB
-			grpc.MaxCallSendMsgSize(1000*1024*1024), // 100MB
-		),
+		// grpc.WithDefaultCallOptions(
+		// 	grpc.MaxCallRecvMsgSize(1000*1024*1024), // 100MB
+		// 	grpc.MaxCallSendMsgSize(1000*1024*1024), // 100MB
+		// ),
 	}
 
 	conn, err := grpc.Dial("localhost:50051", opts...)
