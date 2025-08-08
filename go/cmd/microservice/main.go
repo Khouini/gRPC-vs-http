@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 	"net"
@@ -87,13 +86,40 @@ func loadData() ([]*pb.Hotel, *pb.Metadata) {
 	return hotels, &metadata
 }
 
-// GetHotels implements the gRPC method
-func (s *Server) GetHotels(ctx context.Context, req *pb.Empty) (*pb.HotelsResponse, error) {
-	// Return pre-loaded data - no conversion overhead!
-	return &pb.HotelsResponse{
-		Metadata: s.pbMetadata,
-		Hotels:   s.pbHotels,
-	}, nil
+// GetHotelsStreaming implements the streaming gRPC method
+func (s *Server) GetHotelsStreaming(req *pb.StreamRequest, stream pb.DataService_GetHotelsStreamingServer) error {
+	chunkSize := req.ChunkSize
+	if chunkSize <= 0 {
+		chunkSize = 100 // Default chunk size
+	}
+
+	totalHotels := len(s.pbHotels)
+	totalChunks := (totalHotels + int(chunkSize) - 1) / int(chunkSize) // Ceiling division
+
+	for i := 0; i < totalHotels; i += int(chunkSize) {
+		end := i + int(chunkSize)
+		if end > totalHotels {
+			end = totalHotels
+		}
+
+		chunk := &pb.HotelChunk{
+			Hotels:      s.pbHotels[i:end],
+			ChunkIndex:  int32(i / int(chunkSize)),
+			TotalChunks: int32(totalChunks),
+			IsLast:      end == totalHotels,
+		}
+
+		// Include metadata only in the first chunk
+		if i == 0 {
+			chunk.Metadata = s.pbMetadata
+		}
+
+		if err := stream.Send(chunk); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func main() {

@@ -19,7 +19,6 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	DataService_GetHotels_FullMethodName          = "/data.DataService/GetHotels"
 	DataService_GetHotelsStreaming_FullMethodName = "/data.DataService/GetHotelsStreaming"
 )
 
@@ -29,7 +28,6 @@ const (
 //
 // Data service definition with streaming support
 type DataServiceClient interface {
-	GetHotels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HotelsResponse, error)
 	GetHotelsStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotelChunk], error)
 }
 
@@ -39,16 +37,6 @@ type dataServiceClient struct {
 
 func NewDataServiceClient(cc grpc.ClientConnInterface) DataServiceClient {
 	return &dataServiceClient{cc}
-}
-
-func (c *dataServiceClient) GetHotels(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*HotelsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(HotelsResponse)
-	err := c.cc.Invoke(ctx, DataService_GetHotels_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *dataServiceClient) GetHotelsStreaming(ctx context.Context, in *StreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotelChunk], error) {
@@ -76,7 +64,6 @@ type DataService_GetHotelsStreamingClient = grpc.ServerStreamingClient[HotelChun
 //
 // Data service definition with streaming support
 type DataServiceServer interface {
-	GetHotels(context.Context, *Empty) (*HotelsResponse, error)
 	GetHotelsStreaming(*StreamRequest, grpc.ServerStreamingServer[HotelChunk]) error
 	mustEmbedUnimplementedDataServiceServer()
 }
@@ -88,9 +75,6 @@ type DataServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedDataServiceServer struct{}
 
-func (UnimplementedDataServiceServer) GetHotels(context.Context, *Empty) (*HotelsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetHotels not implemented")
-}
 func (UnimplementedDataServiceServer) GetHotelsStreaming(*StreamRequest, grpc.ServerStreamingServer[HotelChunk]) error {
 	return status.Errorf(codes.Unimplemented, "method GetHotelsStreaming not implemented")
 }
@@ -115,24 +99,6 @@ func RegisterDataServiceServer(s grpc.ServiceRegistrar, srv DataServiceServer) {
 	s.RegisterService(&DataService_ServiceDesc, srv)
 }
 
-func _DataService_GetHotels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataServiceServer).GetHotels(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DataService_GetHotels_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataServiceServer).GetHotels(ctx, req.(*Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DataService_GetHotelsStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(StreamRequest)
 	if err := stream.RecvMsg(m); err != nil {
@@ -150,12 +116,7 @@ type DataService_GetHotelsStreamingServer = grpc.ServerStreamingServer[HotelChun
 var DataService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "data.DataService",
 	HandlerType: (*DataServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetHotels",
-			Handler:    _DataService_GetHotels_Handler,
-		},
-	},
+	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "GetHotelsStreaming",

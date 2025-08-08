@@ -32,37 +32,62 @@ func NewGatewayServer(client pb.DataServiceClient) *GatewayServer {
 	return &GatewayServer{client: client}
 }
 
-// handleStats processes the /stats endpoint (original method)
+// handleStats processes the /stats endpoint using streaming
 func (g *GatewayServer) handleStats(c *gin.Context) {
 	startTime := time.Now()
 
-	// Call gRPC microservice
+	// Call gRPC microservice using streaming
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	resp, err := g.client.GetHotels(ctx, &pb.Empty{})
+	stream, err := g.client.GetHotelsStreaming(ctx, &pb.StreamRequest{ChunkSize: 500})
 	if err != nil {
-		log.Printf("gRPC call failed: %v", err)
+		log.Printf("gRPC streaming call failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from microservice"})
 		return
 	}
 
-	// Count available hotels
-	totalHotels := len(resp.Hotels)
-	availableHotels := 0
+	var totalHotels int
+	var availableHotels int
+	var metadata *pb.Metadata
 
-	for _, hotel := range resp.Hotels {
-		if hotel.Available != nil && *hotel.Available {
-			availableHotels++
+	// Receive all chunks and process them
+	for {
+		chunk, err := stream.Recv()
+		if err != nil {
+			if err.Error() == "EOF" {
+				break
+			}
+			log.Printf("gRPC stream receive failed: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to receive data from microservice"})
+			return
+		}
+
+		// Get metadata from first chunk
+		if chunk.Metadata != nil {
+			metadata = chunk.Metadata
+		}
+
+		// Count hotels in this chunk
+		totalHotels += len(chunk.Hotels)
+		for _, hotel := range chunk.Hotels {
+			if hotel.Available != nil && *hotel.Available {
+				availableHotels++
+			}
 		}
 	}
 
 	processTime := time.Since(startTime).Milliseconds()
 
+	var dataSize float64
+	if metadata != nil {
+		dataSize = metadata.ActualSizeMB
+	}
+
 	stats := StatsResponse{
 		TotalHotels:     totalHotels,
 		AvailableHotels: availableHotels,
-		DataSize:        resp.Metadata.ActualSizeMB,
+		DataSize:        dataSize,
 		ProcessTimeMs:   processTime,
 	}
 
@@ -73,7 +98,7 @@ func (g *GatewayServer) handleStats(c *gin.Context) {
 func (g *GatewayServer) setupRoutes() *gin.Engine {
 	r := gin.Default()
 
-	// Original endpoint (loads all data at once)
+	// Streaming endpoint
 	r.GET("/stats", g.handleStats)
 
 	// Health check

@@ -21,43 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Empty request message
-type Empty struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Empty) Reset() {
-	*x = Empty{}
-	mi := &file_data_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Empty) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Empty) ProtoMessage() {}
-
-func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
-func (*Empty) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{0}
-}
-
 // Stream request with chunk size
 type StreamRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -68,7 +31,7 @@ type StreamRequest struct {
 
 func (x *StreamRequest) Reset() {
 	*x = StreamRequest{}
-	mi := &file_data_proto_msgTypes[1]
+	mi := &file_data_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -80,7 +43,7 @@ func (x *StreamRequest) String() string {
 func (*StreamRequest) ProtoMessage() {}
 
 func (x *StreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[1]
+	mi := &file_data_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -93,7 +56,7 @@ func (x *StreamRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StreamRequest.ProtoReflect.Descriptor instead.
 func (*StreamRequest) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{1}
+	return file_data_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *StreamRequest) GetChunkSize() int32 {
@@ -155,7 +118,7 @@ type Hotel struct {
 
 func (x *Hotel) Reset() {
 	*x = Hotel{}
-	mi := &file_data_proto_msgTypes[2]
+	mi := &file_data_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -167,7 +130,7 @@ func (x *Hotel) String() string {
 func (*Hotel) ProtoMessage() {}
 
 func (x *Hotel) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[2]
+	mi := &file_data_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -180,7 +143,7 @@ func (x *Hotel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Hotel.ProtoReflect.Descriptor instead.
 func (*Hotel) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{2}
+	return file_data_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Hotel) GetSupplierId() int32 {
@@ -501,7 +464,7 @@ type Room struct {
 
 func (x *Room) Reset() {
 	*x = Room{}
-	mi := &file_data_proto_msgTypes[3]
+	mi := &file_data_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -513,7 +476,7 @@ func (x *Room) String() string {
 func (*Room) ProtoMessage() {}
 
 func (x *Room) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[3]
+	mi := &file_data_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -526,7 +489,7 @@ func (x *Room) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Room.ProtoReflect.Descriptor instead.
 func (*Room) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{3}
+	return file_data_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Room) GetCode() string {
@@ -626,7 +589,7 @@ type Rate struct {
 
 func (x *Rate) Reset() {
 	*x = Rate{}
-	mi := &file_data_proto_msgTypes[4]
+	mi := &file_data_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -638,7 +601,7 @@ func (x *Rate) String() string {
 func (*Rate) ProtoMessage() {}
 
 func (x *Rate) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[4]
+	mi := &file_data_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -651,7 +614,7 @@ func (x *Rate) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Rate.ProtoReflect.Descriptor instead.
 func (*Rate) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{4}
+	return file_data_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Rate) GetRateKey() string {
@@ -849,7 +812,7 @@ type CancellationPolicy struct {
 
 func (x *CancellationPolicy) Reset() {
 	*x = CancellationPolicy{}
-	mi := &file_data_proto_msgTypes[5]
+	mi := &file_data_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -861,7 +824,7 @@ func (x *CancellationPolicy) String() string {
 func (*CancellationPolicy) ProtoMessage() {}
 
 func (x *CancellationPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[5]
+	mi := &file_data_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -874,7 +837,7 @@ func (x *CancellationPolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CancellationPolicy.ProtoReflect.Descriptor instead.
 func (*CancellationPolicy) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{5}
+	return file_data_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CancellationPolicy) GetAmount() float64 {
@@ -923,7 +886,7 @@ type Offer struct {
 
 func (x *Offer) Reset() {
 	*x = Offer{}
-	mi := &file_data_proto_msgTypes[6]
+	mi := &file_data_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -935,7 +898,7 @@ func (x *Offer) String() string {
 func (*Offer) ProtoMessage() {}
 
 func (x *Offer) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[6]
+	mi := &file_data_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -948,7 +911,7 @@ func (x *Offer) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Offer.ProtoReflect.Descriptor instead.
 func (*Offer) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{6}
+	return file_data_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Offer) GetAmount() float64 {
@@ -983,7 +946,7 @@ type Promotion struct {
 
 func (x *Promotion) Reset() {
 	*x = Promotion{}
-	mi := &file_data_proto_msgTypes[7]
+	mi := &file_data_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -995,7 +958,7 @@ func (x *Promotion) String() string {
 func (*Promotion) ProtoMessage() {}
 
 func (x *Promotion) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[7]
+	mi := &file_data_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1008,7 +971,7 @@ func (x *Promotion) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Promotion.ProtoReflect.Descriptor instead.
 func (*Promotion) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{7}
+	return file_data_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Promotion) GetRemark() string {
@@ -1044,7 +1007,7 @@ type Supplement struct {
 
 func (x *Supplement) Reset() {
 	*x = Supplement{}
-	mi := &file_data_proto_msgTypes[8]
+	mi := &file_data_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1056,7 +1019,7 @@ func (x *Supplement) String() string {
 func (*Supplement) ProtoMessage() {}
 
 func (x *Supplement) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[8]
+	mi := &file_data_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1069,7 +1032,7 @@ func (x *Supplement) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Supplement.ProtoReflect.Descriptor instead.
 func (*Supplement) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{8}
+	return file_data_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Supplement) GetName() string {
@@ -1113,7 +1076,7 @@ type Tax struct {
 
 func (x *Tax) Reset() {
 	*x = Tax{}
-	mi := &file_data_proto_msgTypes[9]
+	mi := &file_data_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1125,7 +1088,7 @@ func (x *Tax) String() string {
 func (*Tax) ProtoMessage() {}
 
 func (x *Tax) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[9]
+	mi := &file_data_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1138,7 +1101,7 @@ func (x *Tax) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tax.ProtoReflect.Descriptor instead.
 func (*Tax) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{9}
+	return file_data_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Tax) GetName() string {
@@ -1186,7 +1149,7 @@ type Neighborhood struct {
 
 func (x *Neighborhood) Reset() {
 	*x = Neighborhood{}
-	mi := &file_data_proto_msgTypes[10]
+	mi := &file_data_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1198,7 +1161,7 @@ func (x *Neighborhood) String() string {
 func (*Neighborhood) ProtoMessage() {}
 
 func (x *Neighborhood) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[10]
+	mi := &file_data_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1211,7 +1174,7 @@ func (x *Neighborhood) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Neighborhood.ProtoReflect.Descriptor instead.
 func (*Neighborhood) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{10}
+	return file_data_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Neighborhood) GetName() string {
@@ -1239,7 +1202,7 @@ type Review struct {
 
 func (x *Review) Reset() {
 	*x = Review{}
-	mi := &file_data_proto_msgTypes[11]
+	mi := &file_data_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1251,7 +1214,7 @@ func (x *Review) String() string {
 func (*Review) ProtoMessage() {}
 
 func (x *Review) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[11]
+	mi := &file_data_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1264,7 +1227,7 @@ func (x *Review) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Review.ProtoReflect.Descriptor instead.
 func (*Review) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{11}
+	return file_data_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *Review) GetScore() float64 {
@@ -1302,7 +1265,7 @@ type HotelReview struct {
 
 func (x *HotelReview) Reset() {
 	*x = HotelReview{}
-	mi := &file_data_proto_msgTypes[12]
+	mi := &file_data_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1314,7 +1277,7 @@ func (x *HotelReview) String() string {
 func (*HotelReview) ProtoMessage() {}
 
 func (x *HotelReview) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[12]
+	mi := &file_data_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1327,7 +1290,7 @@ func (x *HotelReview) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HotelReview.ProtoReflect.Descriptor instead.
 func (*HotelReview) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{12}
+	return file_data_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *HotelReview) GetId() string {
@@ -1386,7 +1349,7 @@ type Metadata struct {
 
 func (x *Metadata) Reset() {
 	*x = Metadata{}
-	mi := &file_data_proto_msgTypes[13]
+	mi := &file_data_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1398,7 +1361,7 @@ func (x *Metadata) String() string {
 func (*Metadata) ProtoMessage() {}
 
 func (x *Metadata) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[13]
+	mi := &file_data_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1411,7 +1374,7 @@ func (x *Metadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Metadata.ProtoReflect.Descriptor instead.
 func (*Metadata) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{13}
+	return file_data_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *Metadata) GetGeneratedAt() string {
@@ -1463,7 +1426,7 @@ type HotelChunk struct {
 
 func (x *HotelChunk) Reset() {
 	*x = HotelChunk{}
-	mi := &file_data_proto_msgTypes[14]
+	mi := &file_data_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1475,7 +1438,7 @@ func (x *HotelChunk) String() string {
 func (*HotelChunk) ProtoMessage() {}
 
 func (x *HotelChunk) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[14]
+	mi := &file_data_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1488,7 +1451,7 @@ func (x *HotelChunk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HotelChunk.ProtoReflect.Descriptor instead.
 func (*HotelChunk) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{14}
+	return file_data_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *HotelChunk) GetHotels() []*Hotel {
@@ -1526,66 +1489,12 @@ func (x *HotelChunk) GetMetadata() *Metadata {
 	return nil
 }
 
-// Response containing hotels and metadata
-type HotelsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Metadata      *Metadata              `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	Hotels        []*Hotel               `protobuf:"bytes,2,rep,name=hotels,proto3" json:"hotels,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *HotelsResponse) Reset() {
-	*x = HotelsResponse{}
-	mi := &file_data_proto_msgTypes[15]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *HotelsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*HotelsResponse) ProtoMessage() {}
-
-func (x *HotelsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_data_proto_msgTypes[15]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use HotelsResponse.ProtoReflect.Descriptor instead.
-func (*HotelsResponse) Descriptor() ([]byte, []int) {
-	return file_data_proto_rawDescGZIP(), []int{15}
-}
-
-func (x *HotelsResponse) GetMetadata() *Metadata {
-	if x != nil {
-		return x.Metadata
-	}
-	return nil
-}
-
-func (x *HotelsResponse) GetHotels() []*Hotel {
-	if x != nil {
-		return x.Hotels
-	}
-	return nil
-}
-
 var File_data_proto protoreflect.FileDescriptor
 
 const file_data_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"data.proto\x12\x04data\"\a\n" +
-	"\x05Empty\"-\n" +
+	"data.proto\x12\x04data\"-\n" +
 	"\rStreamRequest\x12\x1c\n" +
 	"\tchunkSize\x18\x01 \x01(\x05R\tchunkSize\"\xa7\x10\n" +
 	"\x05Hotel\x12#\n" +
@@ -1846,12 +1755,8 @@ const file_data_proto_rawDesc = "" +
 	"chunkIndex\x12 \n" +
 	"\vtotalChunks\x18\x03 \x01(\x05R\vtotalChunks\x12\x16\n" +
 	"\x06isLast\x18\x04 \x01(\bR\x06isLast\x12*\n" +
-	"\bmetadata\x18\x05 \x01(\v2\x0e.data.MetadataR\bmetadata\"a\n" +
-	"\x0eHotelsResponse\x12*\n" +
-	"\bmetadata\x18\x01 \x01(\v2\x0e.data.MetadataR\bmetadata\x12#\n" +
-	"\x06hotels\x18\x02 \x03(\v2\v.data.HotelR\x06hotels2|\n" +
-	"\vDataService\x12.\n" +
-	"\tGetHotels\x12\v.data.Empty\x1a\x14.data.HotelsResponse\x12=\n" +
+	"\bmetadata\x18\x05 \x01(\v2\x0e.data.MetadataR\bmetadata2L\n" +
+	"\vDataService\x12=\n" +
 	"\x12GetHotelsStreaming\x12\x13.data.StreamRequest\x1a\x10.data.HotelChunk0\x01B\tZ\a./protob\x06proto3"
 
 var (
@@ -1866,58 +1771,52 @@ func file_data_proto_rawDescGZIP() []byte {
 	return file_data_proto_rawDescData
 }
 
-var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_data_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_data_proto_goTypes = []any{
-	(*Empty)(nil),              // 0: data.Empty
-	(*StreamRequest)(nil),      // 1: data.StreamRequest
-	(*Hotel)(nil),              // 2: data.Hotel
-	(*Room)(nil),               // 3: data.Room
-	(*Rate)(nil),               // 4: data.Rate
-	(*CancellationPolicy)(nil), // 5: data.CancellationPolicy
-	(*Offer)(nil),              // 6: data.Offer
-	(*Promotion)(nil),          // 7: data.Promotion
-	(*Supplement)(nil),         // 8: data.Supplement
-	(*Tax)(nil),                // 9: data.Tax
-	(*Neighborhood)(nil),       // 10: data.Neighborhood
-	(*Review)(nil),             // 11: data.Review
-	(*HotelReview)(nil),        // 12: data.HotelReview
-	(*Metadata)(nil),           // 13: data.Metadata
-	(*HotelChunk)(nil),         // 14: data.HotelChunk
-	(*HotelsResponse)(nil),     // 15: data.HotelsResponse
-	nil,                        // 16: data.Hotel.DistancesEntry
-	nil,                        // 17: data.Hotel.StrengthEntry
-	nil,                        // 18: data.Hotel.ReviewsSubratingsAverageEntry
-	nil,                        // 19: data.HotelReview.SubratingsEntry
+	(*StreamRequest)(nil),      // 0: data.StreamRequest
+	(*Hotel)(nil),              // 1: data.Hotel
+	(*Room)(nil),               // 2: data.Room
+	(*Rate)(nil),               // 3: data.Rate
+	(*CancellationPolicy)(nil), // 4: data.CancellationPolicy
+	(*Offer)(nil),              // 5: data.Offer
+	(*Promotion)(nil),          // 6: data.Promotion
+	(*Supplement)(nil),         // 7: data.Supplement
+	(*Tax)(nil),                // 8: data.Tax
+	(*Neighborhood)(nil),       // 9: data.Neighborhood
+	(*Review)(nil),             // 10: data.Review
+	(*HotelReview)(nil),        // 11: data.HotelReview
+	(*Metadata)(nil),           // 12: data.Metadata
+	(*HotelChunk)(nil),         // 13: data.HotelChunk
+	nil,                        // 14: data.Hotel.DistancesEntry
+	nil,                        // 15: data.Hotel.StrengthEntry
+	nil,                        // 16: data.Hotel.ReviewsSubratingsAverageEntry
+	nil,                        // 17: data.HotelReview.SubratingsEntry
 }
 var file_data_proto_depIdxs = []int32{
-	3,  // 0: data.Hotel.rooms:type_name -> data.Room
-	8,  // 1: data.Hotel.supplements:type_name -> data.Supplement
-	16, // 2: data.Hotel.distances:type_name -> data.Hotel.DistancesEntry
-	10, // 3: data.Hotel.neighborhood:type_name -> data.Neighborhood
-	17, // 4: data.Hotel.strength:type_name -> data.Hotel.StrengthEntry
-	11, // 5: data.Hotel.review:type_name -> data.Review
-	18, // 6: data.Hotel.reviewsSubratingsAverage:type_name -> data.Hotel.ReviewsSubratingsAverageEntry
-	12, // 7: data.Hotel.reviews:type_name -> data.HotelReview
-	4,  // 8: data.Room.rates:type_name -> data.Rate
-	5,  // 9: data.Rate.cancellationPolicies:type_name -> data.CancellationPolicy
-	6,  // 10: data.Rate.offers:type_name -> data.Offer
-	7,  // 11: data.Rate.promotions:type_name -> data.Promotion
-	8,  // 12: data.Rate.supplements:type_name -> data.Supplement
-	9,  // 13: data.Rate.taxes:type_name -> data.Tax
-	19, // 14: data.HotelReview.subratings:type_name -> data.HotelReview.SubratingsEntry
-	2,  // 15: data.HotelChunk.hotels:type_name -> data.Hotel
-	13, // 16: data.HotelChunk.metadata:type_name -> data.Metadata
-	13, // 17: data.HotelsResponse.metadata:type_name -> data.Metadata
-	2,  // 18: data.HotelsResponse.hotels:type_name -> data.Hotel
-	0,  // 19: data.DataService.GetHotels:input_type -> data.Empty
-	1,  // 20: data.DataService.GetHotelsStreaming:input_type -> data.StreamRequest
-	15, // 21: data.DataService.GetHotels:output_type -> data.HotelsResponse
-	14, // 22: data.DataService.GetHotelsStreaming:output_type -> data.HotelChunk
-	21, // [21:23] is the sub-list for method output_type
-	19, // [19:21] is the sub-list for method input_type
-	19, // [19:19] is the sub-list for extension type_name
-	19, // [19:19] is the sub-list for extension extendee
-	0,  // [0:19] is the sub-list for field type_name
+	2,  // 0: data.Hotel.rooms:type_name -> data.Room
+	7,  // 1: data.Hotel.supplements:type_name -> data.Supplement
+	14, // 2: data.Hotel.distances:type_name -> data.Hotel.DistancesEntry
+	9,  // 3: data.Hotel.neighborhood:type_name -> data.Neighborhood
+	15, // 4: data.Hotel.strength:type_name -> data.Hotel.StrengthEntry
+	10, // 5: data.Hotel.review:type_name -> data.Review
+	16, // 6: data.Hotel.reviewsSubratingsAverage:type_name -> data.Hotel.ReviewsSubratingsAverageEntry
+	11, // 7: data.Hotel.reviews:type_name -> data.HotelReview
+	3,  // 8: data.Room.rates:type_name -> data.Rate
+	4,  // 9: data.Rate.cancellationPolicies:type_name -> data.CancellationPolicy
+	5,  // 10: data.Rate.offers:type_name -> data.Offer
+	6,  // 11: data.Rate.promotions:type_name -> data.Promotion
+	7,  // 12: data.Rate.supplements:type_name -> data.Supplement
+	8,  // 13: data.Rate.taxes:type_name -> data.Tax
+	17, // 14: data.HotelReview.subratings:type_name -> data.HotelReview.SubratingsEntry
+	1,  // 15: data.HotelChunk.hotels:type_name -> data.Hotel
+	12, // 16: data.HotelChunk.metadata:type_name -> data.Metadata
+	0,  // 17: data.DataService.GetHotelsStreaming:input_type -> data.StreamRequest
+	13, // 18: data.DataService.GetHotelsStreaming:output_type -> data.HotelChunk
+	18, // [18:19] is the sub-list for method output_type
+	17, // [17:18] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_data_proto_init() }
@@ -1925,6 +1824,7 @@ func file_data_proto_init() {
 	if File_data_proto != nil {
 		return
 	}
+	file_data_proto_msgTypes[1].OneofWrappers = []any{}
 	file_data_proto_msgTypes[2].OneofWrappers = []any{}
 	file_data_proto_msgTypes[3].OneofWrappers = []any{}
 	file_data_proto_msgTypes[4].OneofWrappers = []any{}
@@ -1932,14 +1832,13 @@ func file_data_proto_init() {
 	file_data_proto_msgTypes[6].OneofWrappers = []any{}
 	file_data_proto_msgTypes[7].OneofWrappers = []any{}
 	file_data_proto_msgTypes[8].OneofWrappers = []any{}
-	file_data_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_data_proto_rawDesc), len(file_data_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   20,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
