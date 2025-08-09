@@ -106,6 +106,11 @@ class SimpleFakeGenerator {
     }
 
     generateRooms(hotelId) {
+        // Generate hotels with zero rooms occasionally (every 10th hotel)
+        if (hotelId % 10 === 0) {
+            return []; // Return empty array for zero rooms
+        }
+
         const numRooms = 20 + (hotelId % 31); // 20-50 rooms per hotel
         const rooms = [];
 
